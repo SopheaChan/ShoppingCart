@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     proQuantity.setText(Integer.toString(productQuantity));
                     Toast.makeText(getApplicationContext(), "Added " + mProduct.getProName()
                             + " to cart!" + "\n" + "Current order: " + mProduct.getProQuantity()
-                            +"\n"+"Amount: "+Double.toString(Double.parseDouble(mProduct.getProPrice())*productQuantity), Toast.LENGTH_LONG).show();
+                            + "\n" + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProPrice()) * productQuantity), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You cannot make an order for 20 burgers a time.", Toast.LENGTH_LONG).show();
                 }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     proQuantity.setText(Integer.toString(productQuantity));
                     Toast.makeText(getApplicationContext(), "Remove " + mProduct.getProName() + " from cart!" +
                             "\n" + "Order remained: " + mProduct.getProQuantity()
-                            +"\n"+"Amount: "+Double.toString(Double.parseDouble(mProduct.getProPrice())*productQuantity), Toast.LENGTH_LONG).show();
+                            + "\n" + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProPrice()) * productQuantity), Toast.LENGTH_LONG).show();
                 } else {
                     return;
                 }
@@ -104,13 +104,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void onCheckout(List<Product> proList) {
         Double totalAmount = 0.0;
-        for (int i = 0; i<proList.size();i++){
+        for (int i = 0; i < proList.size(); i++) {
             Product product = proList.get(i);
-            totalAmount += Double.parseDouble(product.getProPrice())*product.getProQuantity();
+            totalAmount += Double.parseDouble(product.getProPrice()) * product.getProQuantity();
         }
         DecimalFormat df = new DecimalFormat("#.##");
-        String dx=df.format(totalAmount);
-        totalAmount=Double.valueOf(dx);
+        String dx = df.format(totalAmount);
+        totalAmount = Double.valueOf(dx);
         tvTotalPrice.setText("$ " + Double.toString(totalAmount));
     }
 
