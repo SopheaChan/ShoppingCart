@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="@drawable/black_burger"
+    android:background="@drawable/order_food_online"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgProfilePhoto"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:elevation="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/black_burger" />
+        android:src="@drawable/boy_icon" />
 
     <TextView
+        android:id="@+id/tvProfileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/raleway"
         android:text="Jay Dev"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorBlack"
         android:textSize="16sp" />
-
 </LinearLayout>

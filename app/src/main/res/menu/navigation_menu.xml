@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
-        <item android:title="Sent"
-            android:id="@+id/sent"
+        <item android:title="Profile"
+            android:id="@+id/profile"
             android:icon="@drawable/ic_launcher_background"/>
-        <item android:title="Draft"
-            android:id="@+id/draft"
+        <item android:title="Activity"
+            android:id="@+id/activity"
             android:icon="@drawable/ic_launcher_background"/>
-        <item android:title="Starred"
-            android:id="@+id/starred"
+        <item android:title="Setting"
+            android:id="@+id/setting"
             android:icon="@drawable/ic_launcher_background"/>
     </group>
     <item android:title="Subheader">
         <menu>
-            <item android:title="View all mail"
-                android:id="@+id/all_mail"/>
-            <item android:title="Delete"
-                android:id="@+id/delete"/>
+            <item android:title="Ordered list"
+                android:id="@+id/ordered_list"/>
+            <item android:title="Sign out"
+                android:id="@+id/sign_out"/>
         </menu>
     </item>
 </menu>
