@@ -3,10 +3,10 @@ package com.example.dell.myapplication.model;
 public class Product {
     private int proImage;
     private String proName;
-    private String proPrice;
+    private double proPrice;
     private int proQuantity;
 
-    public Product(int image, String proName, String proPrice, int proQuantity) {
+    public Product(int image, String proName, double proPrice, int proQuantity) {
         this.proImage = image;
         this.proName = proName;
         this.proPrice = proPrice;
@@ -21,7 +21,7 @@ public class Product {
         return proName;
     }
 
-    public String getProPrice() {
+    public double getProPrice() {
         return proPrice;
     }
 
@@ -37,7 +37,7 @@ public class Product {
         this.proName = proName;
     }
 
-    public void setProPrice(String proPrice) {
+    public void setProPrice(double proPrice) {
         this.proPrice = proPrice;
     }
 

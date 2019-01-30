@@ -13,13 +13,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.dell.myapplication.model.Product;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerView;
@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        navigationView = findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(this);
         toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -50,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
         btnCheckout = findViewById(R.id.button_check_out);
         tvTotalPrice = findViewById(R.id.total_price);
 
@@ -65,10 +64,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (productQuantity < 20) {
                     productQuantity++;
                     mProduct.setProQuantity(productQuantity);
-                    proQuantity.setText(Integer.toString(productQuantity));
+                    proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
                     Toast.makeText(getApplicationContext(), "Added " + mProduct.getProName()
                             + " to cart!" + "\n" + "Current order: " + mProduct.getProQuantity()
-                            + "\n" + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProPrice()) * productQuantity), Toast.LENGTH_LONG).show();
+                            + "\n" + "Amount: " + Double.toString(mProduct.getProPrice() * productQuantity), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "You cannot make an order for 20 burgers a time.", Toast.LENGTH_LONG).show();
                 }
@@ -80,47 +79,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (productQuantity > 0) {
                     productQuantity--;
                     mProduct.setProQuantity(productQuantity);
-                    proQuantity.setText(Integer.toString(productQuantity));
+                    proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
                     Toast.makeText(getApplicationContext(), "Remove " + mProduct.getProName() + " from cart!" +
                             "\n" + "Order remained: " + mProduct.getProQuantity()
-                            + "\n" + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProPrice()) * productQuantity), Toast.LENGTH_LONG).show();
-                } else {
-                    return;
+                            + "\n" + "Amount: " + Double.toString(mProduct.getProPrice() * productQuantity), Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         recyclerView.setAdapter(myAdapter);
-
-        setDataToList();
-
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onCheckout(mProductList);
             }
         });
+        setDataToList();
     }
 
     private void onCheckout(List<Product> proList) {
-        Double totalAmount = 0.0;
+        double totalAmount = 0.0;
+        String dollarSymbol = "$";
         for (int i = 0; i < proList.size(); i++) {
             Product product = proList.get(i);
-            totalAmount += Double.parseDouble(product.getProPrice()) * product.getProQuantity();
+            totalAmount += product.getProPrice() * product.getProQuantity();
         }
+        //Split the number after the dot of total amount, only two characters will be taken
         DecimalFormat df = new DecimalFormat("#.##");
         String dx = df.format(totalAmount);
         totalAmount = Double.valueOf(dx);
-        tvTotalPrice.setText("$ " + Double.toString(totalAmount));
+        tvTotalPrice.setText(String.format(Locale.US, dollarSymbol + "%f", totalAmount));
     }
 
     private void setDataToList() {
-        Product product1 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 1);
-        Product product2 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 2);
-        Product product3 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 3);
-        Product product4 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 4);
-        Product product5 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 5);
-        Product product6 = new Product(R.drawable.black_burger, "Black Pork Burger", "15.4", 6);
+        Product product1 = new Product(R.drawable.black_burger, "Black Pork Burger", 5.6, 1);
+        Product product2 = new Product(R.drawable.black_burger, "Black Pork Burger", 7.8, 2);
+        Product product3 = new Product(R.drawable.black_burger, "Black Pork Burger", 4.00, 3);
+        Product product4 = new Product(R.drawable.black_burger, "Black Pork Burger", 6.2, 4);
+        Product product5 = new Product(R.drawable.black_burger, "Black Pork Burger", 3.1, 5);
+        Product product6 = new Product(R.drawable.black_burger, "Black Pork Burger", 9.01, 6);
         mProductList.add(product1);
         mProductList.add(product2);
         mProductList.add(product3);
