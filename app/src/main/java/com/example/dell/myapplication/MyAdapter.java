@@ -41,7 +41,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         final Product product = productList.get(position);
 
         viewHolder.productName.setText(product.getProName());
-        viewHolder.productPrice.setText(String.format(Locale.US,"%f", product.getProPrice()));
+        viewHolder.productPrice.setText(String.format(Locale.US,"%.2f", product.getProPrice()));
         viewHolder.productQuantity.setText(String.format(Locale.US, "%d", product.getProQuantity()));
         Glide.with(context)
                 .load(product.getProImage())

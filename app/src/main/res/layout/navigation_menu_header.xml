@@ -7,7 +7,9 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    tools:context=".MainActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgProfilePhoto"
@@ -15,7 +17,7 @@
         android:layout_height="60dp"
         android:elevation="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/boy_icon" />
+        android:src="@drawable/boy_icon"/>
 
     <TextView
         android:id="@+id/tvProfileName"
