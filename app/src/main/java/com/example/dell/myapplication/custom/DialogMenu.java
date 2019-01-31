@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dell.myapplication.OnDialogClickListener;
+import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.R;
 
 public class DialogMenu implements View.OnClickListener{
@@ -18,6 +18,7 @@ public class DialogMenu implements View.OnClickListener{
     private OnDialogClickListener callback;
     private static final int GALLERY = 1;
     private static final int CAMERA = 2;
+    private static final int VIEW_PROFILE_PICTURE = 3;
     public  DialogMenu(Context context, OnDialogClickListener callback){
         this.context = context;
         this.callback = callback;
@@ -34,22 +35,31 @@ public class DialogMenu implements View.OnClickListener{
 
         TextView tvGallery = dialog.findViewById(R.id.tvGallery);
         TextView tvTakePhoto = dialog.findViewById(R.id.tvTakePhoto);
+        TextView tvViewProfile = dialog.findViewById(R.id.tvViewProfilePicture);
         tvGallery.setOnClickListener(this);
         tvTakePhoto.setOnClickListener(this);
+        tvViewProfile.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tvGallery: {
-                this.callback.onItemClickListener(GALLERY, v);
+                this.callback.onItemClickListener(GALLERY, v, dialog);
                 break;
             }
             case R.id.tvTakePhoto: {
-                this.callback.onItemClickListener(CAMERA, v);
+                this.callback.onItemClickListener(CAMERA, v, dialog);
                 break;
             }
-            default: Toast.makeText(context, "Nothing clicked...", Toast.LENGTH_SHORT).show();
+            case R.id.tvViewProfilePicture: {
+                this.callback.onItemClickListener(VIEW_PROFILE_PICTURE, v, dialog);
+                break;
+            }
+            default: {
+                Toast.makeText(context, "Nothing clicked...", Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
     }
 }

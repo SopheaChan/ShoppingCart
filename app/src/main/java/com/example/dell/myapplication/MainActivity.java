@@ -1,6 +1,9 @@
 package com.example.dell.myapplication;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,15 +18,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.custom.DialogMenu;
+import com.example.dell.myapplication.custom.ProfileImageView;
+import com.example.dell.myapplication.listener.OnDialogClickListener;
+import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
 import com.example.dell.myapplication.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private View headerView;
     private CircleImageView profileImage;
     private OnDialogClickListener onDialogClick;
+    private ProfileImageView profileImageView;
+    private ProfileImageViewOnClickListener tvProfileImageViewOnClickListener;
+    private Uri mProfileUri;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -108,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         navigationView = findViewById(R.id.navigation_view);
+
         headerView = navigationView.getHeaderView(0);
         profileImage = headerView.findViewById(R.id.imgProfilePhoto);
 
@@ -116,14 +130,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 dialogMenu = new DialogMenu(MainActivity.this, onDialogClick = new OnDialogClickListener() {
                     @Override
-                    public void onItemClickListener(int result, View view) {
+                    public void onItemClickListener(final int result, View view, final Dialog dialog) {
+                        checkDeviceCamera(view);
                         switch (result) {
                             case 1: {
-                                openGallery();
+                                openGallery(dialog);
                                 break;
                             }
                             case 2: {
-                                Toast.makeText(MainActivity.this, "Camera clicked...", Toast.LENGTH_SHORT).show();
+                                dispatchTakePictureIntent(dialog);
+                                break;
+                            }
+                            case 3: {
+                                profileImageView = new ProfileImageView(MainActivity.this, mProfileUri,
+                                        tvProfileImageViewOnClickListener = new ProfileImageViewOnClickListener() {
+                                            @Override
+                                            public void onClickListener(int resultCode, View v, Dialog dialog1) {
+                                                if (resultCode == 1) {
+                                                    dialog1.dismiss();
+                                                } else {
+                                                    Toast.makeText(MainActivity.this, "Have done nothing...", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                dialog.dismiss();
                                 break;
                             }
                             default: {
@@ -139,10 +169,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setDataToList();
     }
 
-    private void openGallery() {
+    private void checkDeviceCamera(View view) {
+        PackageManager packageManager = MainActivity.this.getPackageManager();
+        final boolean deviceHasCameraFlag = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        if (!deviceHasCameraFlag) {
+            Toast.makeText(MainActivity.this, "Device has no camera", Toast.LENGTH_LONG).show();
+            view.findViewById(R.id.tvTakePhoto).setEnabled(false);
+        }
+//        else {
+//            Toast.makeText(MainActivity.this, "Device has camera", Toast.LENGTH_LONG).show();
+//        }
+    }
+
+    private void dispatchTakePictureIntent(Dialog dialog) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            dialog.dismiss();
+        }
+    }
+
+    private void openGallery(Dialog dialog) {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY_ACCESS);
+        dialog.dismiss();
     }
 
     @Override
@@ -150,14 +201,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
+            mProfileUri = null;
+            mProfileUri = imageUri;
             Glide.with(MainActivity.this).load(imageUri).into(profileImage);
-        }
-//        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 //            Bundle extras = data.getExtras();
 //            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            mProfileBitmap = imageBitmap;
+//            mProfileUri = null;
 //            profileImage.setImageBitmap(imageBitmap);
-//        }
-        else {
+            Uri imageUri = data.getData();
+            mProfileUri = null;
+            mProfileUri = imageUri;
+            Glide.with(MainActivity.this).load(imageUri).into(profileImage);
+        } else {
             Toast.makeText(MainActivity.this, "Nothing to do...", Toast.LENGTH_SHORT).show();
         }
     }
