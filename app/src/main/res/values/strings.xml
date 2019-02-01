@@ -4,4 +4,8 @@
     <string name="close_drawer">Close drawer...</string>
     <string name="gallery">Gallery</string>
     <string name="take_photo">Take Photo</string>
+    <string name="sample_product_description">
+            Fresh milk is a natural high-quality product of Dream Farm,
+        a leading cow farm and milk production factory in Cambodia.
+    </string>
 </resources>

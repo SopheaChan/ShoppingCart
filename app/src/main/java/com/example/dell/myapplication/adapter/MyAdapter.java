@@ -1,4 +1,4 @@
-package com.example.dell.myapplication;
+package com.example.dell.myapplication.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.Product;
 
 import java.util.List;
@@ -96,15 +97,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    interface AddProductToCartListener {
+    public interface AddProductToCartListener {
         void onClick(Product mProduct, TextView productQuantity);
     }
 
-    interface DeleteProductFromCartListener {
+    public interface DeleteProductFromCartListener {
         void onClick(Product mProduct, TextView productQuantity);
     }
 
-    interface ViewItemDetailListener {
+    public interface ViewItemDetailListener {
         void onClick();
     }
 }

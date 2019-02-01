@@ -5,6 +5,7 @@ public class Product {
     private String proName;
     private double proPrice;
     private int proQuantity;
+    private String productDescription;
 
     public Product(int image, String proName, double proPrice, int proQuantity) {
         this.proImage = image;
@@ -43,5 +44,17 @@ public class Product {
 
     public void setProQuantity(int proQuantity) {
         this.proQuantity = proQuantity;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProImage(int proImage) {
+        this.proImage = proImage;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 }

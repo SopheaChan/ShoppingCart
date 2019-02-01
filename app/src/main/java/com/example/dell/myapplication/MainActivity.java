@@ -19,11 +19,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogItemDetail;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.ProfileImageView;
@@ -262,6 +262,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemID = menuItem.getItemId();
         switch (itemID) {
             case R.id.profile: {
+
+                startActivity(new Intent(MainActivity.this, ProductDetail.class));
+
                 Toast.makeText(this, "Navigation menu clicked Profile", Toast.LENGTH_SHORT).show();
                 break;
             }
