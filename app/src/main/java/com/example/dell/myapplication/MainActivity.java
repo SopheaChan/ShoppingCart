@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dell.myapplication.custom.DialogItemDetail;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
@@ -49,12 +51,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private OnDialogClickListener onDialogClick;
     private ProfileImageView profileImageView;
     private ProfileImageViewOnClickListener tvProfileImageViewOnClickListener;
+
     private Uri mProfileUri;
+    private Bitmap mProfileBitmap;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private DialogMenu dialogMenu;
+    private DialogItemDetail dialogItemDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();
                 }
             }
+        }, new MyAdapter.ViewItemDetailListener() {
+            @Override
+            public void onClick() {
+                dialogItemDetail = new DialogItemDetail(MainActivity.this);
+            }
         });
 
         recyclerView.setAdapter(myAdapter);
@@ -142,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             }
                             case 3: {
-                                profileImageView = new ProfileImageView(MainActivity.this, mProfileUri,
+                                profileImageView = new ProfileImageView(MainActivity.this, mProfileUri, mProfileBitmap,
                                         tvProfileImageViewOnClickListener = new ProfileImageViewOnClickListener() {
                                             @Override
                                             public void onClickListener(int resultCode, View v, Dialog dialog1) {
@@ -201,19 +211,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            mProfileUri = null;
             mProfileUri = imageUri;
+            mProfileBitmap = null;
+            Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
+            Log.d("ProfileUri", String.valueOf(mProfileUri));
             Glide.with(MainActivity.this).load(imageUri).into(profileImage);
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bundle extras = data.getExtras();
-//            Bitmap imageBitmap = (Bitmap) extras.get("data");
-//            mProfileBitmap = imageBitmap;
-//            mProfileUri = null;
-//            profileImage.setImageBitmap(imageBitmap);
-            Uri imageUri = data.getData();
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mProfileBitmap = imageBitmap;
             mProfileUri = null;
-            mProfileUri = imageUri;
-            Glide.with(MainActivity.this).load(imageUri).into(profileImage);
+            Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
+            Log.d("ProfileUri", String.valueOf(mProfileUri));
+            profileImage.setImageBitmap(imageBitmap);
         } else {
             Toast.makeText(MainActivity.this, "Nothing to do...", Toast.LENGTH_SHORT).show();
         }

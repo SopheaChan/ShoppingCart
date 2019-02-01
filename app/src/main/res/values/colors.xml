@@ -6,4 +6,5 @@
     <color name="backgroundColor">#FF5476</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorSeaWater">#4286f4</color>
 </resources>

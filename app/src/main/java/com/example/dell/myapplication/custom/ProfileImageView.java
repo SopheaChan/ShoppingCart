@@ -23,7 +23,7 @@ public class ProfileImageView implements View.OnClickListener {
     private static final int DONE = 1;
     private ProfileImageViewOnClickListener callback;
 
-    public ProfileImageView(Context context, Uri profileUri, ProfileImageViewOnClickListener callback){
+    public ProfileImageView(Context context, Uri profileUri, Bitmap profileBitmap, ProfileImageViewOnClickListener callback){
         this.context = context;
         this.callback = callback;
 
@@ -42,6 +42,8 @@ public class ProfileImageView implements View.OnClickListener {
         btnDone.setOnClickListener(this);
         if (profileUri != null) {
             Glide.with(this.context).load(profileUri).into(mProfileImage);
+        } else if (profileBitmap != null){
+            mProfileImage.setImageBitmap(profileBitmap);
         }
     }
 

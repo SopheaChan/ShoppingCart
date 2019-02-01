@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.model.Product;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -17,14 +19,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Product> productList;
     private AddProductToCartListener onAddClickListener;
     private DeleteProductFromCartListener onDeleteClickListener;
+    private ViewItemDetailListener onViewItemDetail;
     private Context context;
 
     public MyAdapter(Context context, List<Product> productList,
                      AddProductToCartListener listener,
-                     DeleteProductFromCartListener deleteListener) {
+                     DeleteProductFromCartListener deleteListener,
+                     ViewItemDetailListener viewItemDetailListener) {
         this.productList = productList;
         this.onAddClickListener = listener;
         this.onDeleteClickListener = deleteListener;
+        this.onViewItemDetail = viewItemDetailListener;
         this.context = context;
     }
 
@@ -41,7 +46,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         final Product product = productList.get(position);
 
         viewHolder.productName.setText(product.getProName());
-        viewHolder.productPrice.setText(String.format(Locale.US,"%.2f", product.getProPrice()));
+        viewHolder.productPrice.setText(String.format(Locale.US, "%.2f", product.getProPrice()));
         viewHolder.productQuantity.setText(String.format(Locale.US, "%d", product.getProQuantity()));
         Glide.with(context)
                 .load(product.getProImage())
@@ -57,6 +62,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 onDeleteClickListener.onClick(product, viewHolder.productQuantity);
+            }
+        });
+        viewHolder.productImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewItemDetail.onClick();
             }
         });
     }
@@ -91,5 +102,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     interface DeleteProductFromCartListener {
         void onClick(Product mProduct, TextView productQuantity);
+    }
+
+    interface ViewItemDetailListener {
+        void onClick();
     }
 }
