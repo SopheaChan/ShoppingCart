@@ -6,12 +6,14 @@ public class Product {
     private double proPrice;
     private int proQuantity;
     private String productDescription;
+    private CompanyInfo companyInfo;
 
-    public Product(int image, String proName, double proPrice, int proQuantity) {
+    public Product(int image, String proName, double proPrice, int proQuantity, CompanyInfo companyInfo) {
         this.proImage = image;
         this.proName = proName;
         this.proPrice = proPrice;
         this.proQuantity = proQuantity;
+        this.companyInfo = companyInfo;
     }
 
     public int getProImage() {
@@ -20,6 +22,10 @@ public class Product {
 
     public String getProName() {
         return proName;
+    }
+
+    public CompanyInfo getCompanyInfo() {
+        return companyInfo;
     }
 
     public double getProPrice() {

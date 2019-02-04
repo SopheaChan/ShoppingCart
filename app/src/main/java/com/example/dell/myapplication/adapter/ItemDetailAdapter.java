@@ -22,12 +22,10 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
 
     private Context context;
     private List<Product> listProduct;
-    private List<CompanyInfo> listCompanyInfo;
 
-    public ItemDetailAdapter(Context context, List<Product> productList, List<CompanyInfo> listCompanyInfo) {
+    public ItemDetailAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.listProduct = productList;
-        this.listCompanyInfo = listCompanyInfo;
     }
 
     @NonNull
@@ -41,7 +39,7 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Product product = listProduct.get(position);
-        CompanyInfo companyInfo = listCompanyInfo.get(position);
+        CompanyInfo companyInfo = product.getCompanyInfo();
 
         viewHolder.tvCompanyName.setText(companyInfo.getCompanyName());
         viewHolder.tvPrice.setText(String.format(Locale.US, "%s", product.getProPrice()));
@@ -49,7 +47,6 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
         viewHolder.tvProductName.setText(product.getProName());
         viewHolder.tvTel.setText(companyInfo.getTel());
         viewHolder.tvEmail.setText(companyInfo.getEmail());
-
 
     }
 
@@ -84,8 +81,8 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvTel = itemView.findViewById(R.id.tvTel);
             tvEmail = itemView.findViewById(R.id.tvEmail);
-            btnAddToCart = itemView.findViewById(R.id.btnAddToCart);
-            btnRemoveFromCart = itemView.findViewById(R.id.btnRemoveFromCart);
+            btnAddToCart = itemView.findViewById(R.id.btnAddToCart1);
+            btnRemoveFromCart = itemView.findViewById(R.id.btnRemoveFromCart1);
             etOrderedQuantity = itemView.findViewById(R.id.etOrderedQuantity);
             btnSubmit = itemView.findViewById(R.id.btnSubmit);
         }

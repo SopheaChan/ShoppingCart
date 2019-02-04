@@ -4,11 +4,11 @@
         <item android:title="Profile"
             android:id="@+id/profile"
             android:icon="@drawable/ic_launcher_background"/>
-        <item android:title="Activity"
-            android:id="@+id/activity"
-            android:icon="@drawable/ic_launcher_background"/>
         <item android:title="Setting"
             android:id="@+id/setting"
+            android:icon="@drawable/ic_launcher_background"/>
+        <item android:title="Activity Log"
+            android:id="@+id/activity"
             android:icon="@drawable/ic_launcher_background"/>
     </group>
     <item android:title="Subheader">

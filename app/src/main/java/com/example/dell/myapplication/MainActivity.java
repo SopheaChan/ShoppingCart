@@ -29,6 +29,7 @@ import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
+import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
 
 import java.util.ArrayList;
@@ -186,9 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "Device has no camera", Toast.LENGTH_LONG).show();
             view.findViewById(R.id.tvTakePhoto).setEnabled(false);
         }
-//        else {
-//            Toast.makeText(MainActivity.this, "Device has camera", Toast.LENGTH_LONG).show();
-//        }
     }
 
     private void dispatchTakePictureIntent(Dialog dialog) {
@@ -242,12 +240,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setDataToList() {
-        Product product1 = new Product(R.drawable.black_burger, "Black Pork Burger", 5.6, 0);
-        Product product2 = new Product(R.drawable.black_burger, "Black Pork Burger", 7.8, 0);
-        Product product3 = new Product(R.drawable.black_burger, "Black Pork Burger", 4.00, 0);
-        Product product4 = new Product(R.drawable.black_burger, "Black Pork Burger", 6.2, 0);
-        Product product5 = new Product(R.drawable.black_burger, "Black Pork Burger", 3.1, 0);
-        Product product6 = new Product(R.drawable.black_burger, "Black Pork Burger", 9.01, 0);
+        CompanyInfo companyInfo1 = new CompanyInfo("Dream Farm", "+855 16 552 693", "dreamfarm@gmail.com");
+        Product product1 = new Product(R.drawable.black_burger, "Black Burger", 5.6, 0, companyInfo1);
+        CompanyInfo companyInfo2 = new CompanyInfo("SR Healthy Farm", "+855 16 622 666", "srhealthyfarm@gmail.com");
+        Product product2 = new Product(R.drawable.black_burger, "Fresh Milk", 7.8, 0, companyInfo2);
+        CompanyInfo companyInfo3 = new CompanyInfo("Eco-famFarm", "+855 12 222 999", "eco-famfarm@gmail.com");
+        Product product3 = new Product(R.drawable.black_burger, "High-Quality Fresh Pork", 4.00, 0, companyInfo3);
+        CompanyInfo companyInfo4 = new CompanyInfo("Cambo-Farm", "+855 23 777 722", "cambo-farm@gmail.com");
+        Product product4 = new Product(R.drawable.black_burger, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
+        CompanyInfo companyInfo5 = new CompanyInfo("HC Community Farm", "+855 23 556 666", "hccommunityfarm@gmail.com");
+        Product product5 = new Product(R.drawable.black_burger, "Khmer Catfish", 3.1, 0, companyInfo5);
+        CompanyInfo companyInfo6 = new CompanyInfo("Cambo Natural Farm", "+855 23 444 422", "cambonaturalfarm@gmail.com");
+        Product product6 = new Product(R.drawable.black_burger, "Natural Banana Flower", 9.01, 0, companyInfo6);
         mProductList.add(product1);
         mProductList.add(product2);
         mProductList.add(product3);
