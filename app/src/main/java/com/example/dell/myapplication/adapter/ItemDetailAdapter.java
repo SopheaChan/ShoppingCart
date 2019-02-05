@@ -47,6 +47,8 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
         viewHolder.tvProductName.setText(product.getProName());
         viewHolder.tvTel.setText(companyInfo.getTel());
         viewHolder.tvEmail.setText(companyInfo.getEmail());
+        viewHolder.etOrderedQuantity.setText(product.getProQuantity());
+
 
     }
 
@@ -56,35 +58,21 @@ public class ItemDetailAdapter extends RecyclerView.Adapter<ItemDetailAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCompanyName;
-        TextView tvProductName;
-        TextView tvPrice;
-        TextView tvOrderedItem;
-        TextView tvTotalAmount;
-        TextView tvDescription;
-        TextView tvTel;
-        TextView tvEmail;
-        ImageView btnAddToCart;
-        ImageView btnRemoveFromCart;
-        EditText etOrderedQuantity;
-        Button btnSubmit;
+        TextView tvCompanyName = itemView.findViewById(R.id.tvCompanyName);
+        TextView tvProductName = itemView.findViewById(R.id.tvProductName);
+        TextView tvPrice = itemView.findViewById(R.id.tvPrice);
+        TextView tvOrderedItem = itemView.findViewById(R.id.tvOrderedItem);
+        TextView tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
+        TextView tvDescription = itemView.findViewById(R.id.tvDescription);
+        TextView tvTel = itemView.findViewById(R.id.tvTel);
+        TextView tvEmail = itemView.findViewById(R.id.tvEmail);
+        ImageView btnAddToCart = itemView.findViewById(R.id.btnAddToCart1);
+        ImageView btnRemoveFromCart = itemView.findViewById(R.id.btnRemoveFromCart1);
+        EditText etOrderedQuantity = itemView.findViewById(R.id.etOrderedQuantity);
+        Button btnSubmit = itemView.findViewById(R.id.btnSubmit);
 
         public ViewHolder(@NonNull View itemView) {
-
             super(itemView);
-
-            tvCompanyName = itemView.findViewById(R.id.tvCompanyName);
-            tvProductName = itemView.findViewById(R.id.tvProductName);
-            tvPrice = itemView.findViewById(R.id.tvPrice);
-            tvOrderedItem = itemView.findViewById(R.id.tvOrderedItem);
-            tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvTel = itemView.findViewById(R.id.tvTel);
-            tvEmail = itemView.findViewById(R.id.tvEmail);
-            btnAddToCart = itemView.findViewById(R.id.btnAddToCart1);
-            btnRemoveFromCart = itemView.findViewById(R.id.btnRemoveFromCart1);
-            etOrderedQuantity = itemView.findViewById(R.id.etOrderedQuantity);
-            btnSubmit = itemView.findViewById(R.id.btnSubmit);
         }
     }
 }

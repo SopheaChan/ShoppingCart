@@ -210,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
             mProfileUri = imageUri;
-            mProfileBitmap = null;
             Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
             Log.d("ProfileUri", String.valueOf(mProfileUri));
             Glide.with(MainActivity.this).load(imageUri).into(profileImage);
@@ -218,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mProfileBitmap = imageBitmap;
-            mProfileUri = null;
             Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
             Log.d("ProfileUri", String.valueOf(mProfileUri));
             profileImage.setImageBitmap(imageBitmap);
@@ -243,15 +241,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         CompanyInfo companyInfo1 = new CompanyInfo("Dream Farm", "+855 16 552 693", "dreamfarm@gmail.com");
         Product product1 = new Product(R.drawable.black_burger, "Black Burger", 5.6, 0, companyInfo1);
         CompanyInfo companyInfo2 = new CompanyInfo("SR Healthy Farm", "+855 16 622 666", "srhealthyfarm@gmail.com");
-        Product product2 = new Product(R.drawable.black_burger, "Fresh Milk", 7.8, 0, companyInfo2);
+        Product product2 = new Product(R.drawable.fresh_milk1, "Fresh Milk", 7.8, 0, companyInfo2);
         CompanyInfo companyInfo3 = new CompanyInfo("Eco-famFarm", "+855 12 222 999", "eco-famfarm@gmail.com");
-        Product product3 = new Product(R.drawable.black_burger, "High-Quality Fresh Pork", 4.00, 0, companyInfo3);
+        Product product3 = new Product(R.drawable.fresh_pork, "High-Quality Fresh Pork", 4.00, 0, companyInfo3);
         CompanyInfo companyInfo4 = new CompanyInfo("Cambo-Farm", "+855 23 777 722", "cambo-farm@gmail.com");
-        Product product4 = new Product(R.drawable.black_burger, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
+        Product product4 = new Product(R.drawable.giant_lobster, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
         CompanyInfo companyInfo5 = new CompanyInfo("HC Community Farm", "+855 23 556 666", "hccommunityfarm@gmail.com");
-        Product product5 = new Product(R.drawable.black_burger, "Khmer Catfish", 3.1, 0, companyInfo5);
+        Product product5 = new Product(R.drawable.khmer_chicken, "Khmer Chicken", 3.1, 0, companyInfo5);
         CompanyInfo companyInfo6 = new CompanyInfo("Cambo Natural Farm", "+855 23 444 422", "cambonaturalfarm@gmail.com");
-        Product product6 = new Product(R.drawable.black_burger, "Natural Banana Flower", 9.01, 0, companyInfo6);
+        Product product6 = new Product(R.drawable.khmer_banana, "Banana", 9.01, 0, companyInfo6);
         mProductList.add(product1);
         mProductList.add(product2);
         mProductList.add(product3);
@@ -266,14 +264,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemID = menuItem.getItemId();
         switch (itemID) {
             case R.id.profile: {
-
-                startActivity(new Intent(MainActivity.this, ProductDetail.class));
-
                 Toast.makeText(this, "Navigation menu clicked Profile", Toast.LENGTH_SHORT).show();
                 break;
             }
-            case R.id.activity: {
-                Toast.makeText(this, "Navigation menu clicked Activity", Toast.LENGTH_SHORT).show();
+            case R.id.location_and_maps: {
+                Toast.makeText(this, "Navigation menu clicked Location", Toast.LENGTH_SHORT).show();
                 break;
             }
             case R.id.setting: {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapsToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="50dp"
+        android:padding="6dp">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/svSearchPlace"
+            android:layout_width="285dp"
+            android:layout_height="40dp" />
+    </RelativeLayout>
+</Toolbar>

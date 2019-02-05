@@ -1,5 +1,6 @@
 package com.example.dell.myapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +20,7 @@ public class ProductDetail2 extends AppCompatActivity {
     private Double mProductPrice;
     private String mCompanyName;
     private String mTel;
-    private String mEmail;
+    private Double mAmount;
 
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -27,12 +28,13 @@ public class ProductDetail2 extends AppCompatActivity {
     private TextView tvTotalAmount;
     private TextView tvCompanyName;
     private TextView tvTel;
-    private TextView tvEmail;
+    private TextView tvViewOnMaps;
     private EditText etOrderQuantity;
     private ImageView imgProductImage;
     private ImageView btnAddToCart;
     private ImageView btnRemoveFromCart;
     private Button btnSubmit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,10 +43,9 @@ public class ProductDetail2 extends AppCompatActivity {
         mProductImage = getIntent().getIntExtra("proImage", 0);
         mProductName = getIntent().getStringExtra("proName");
         mProductPrice = getIntent().getDoubleExtra("proPrice", 0.0);
-        mProductQuantity = getIntent().getIntExtra("proQuantity", 0 );
+        mProductQuantity = getIntent().getIntExtra("proQuantity", 0);
         mCompanyName = getIntent().getStringExtra("companyName");
         mTel = getIntent().getStringExtra("tel");
-        mEmail = getIntent().getStringExtra("email");
 
         tvProductName = findViewById(R.id.tvProductName);
         tvProductPrice = findViewById(R.id.tvPrice);
@@ -52,8 +53,8 @@ public class ProductDetail2 extends AppCompatActivity {
         tvTotalAmount = findViewById(R.id.tvTotalAmount1);
         tvCompanyName = findViewById(R.id.tvCompanyName);
         tvTel = findViewById(R.id.tvTel);
+        tvViewOnMaps = findViewById(R.id.tvViewOnMap);
         etOrderQuantity = findViewById(R.id.etOrderedQuantity);
-        tvEmail = findViewById(R.id.tvEmail);
         imgProductImage = findViewById(R.id.imgProductImage);
         btnAddToCart = findViewById(R.id.btnAddToCart1);
         btnRemoveFromCart = findViewById(R.id.btnRemoveFromCart1);
@@ -84,6 +85,21 @@ public class ProductDetail2 extends AppCompatActivity {
                 onSubmitClicked();
             }
         });
+
+        tvViewOnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFindLocation();
+            }
+        });
+    }
+
+    private void onFindLocation() {
+        Intent intent = new Intent(ProductDetail2.this, MapsActivity.class);
+        intent.putExtra("companyName", mCompanyName);
+        intent.putExtra("lat", 13.465109);
+        intent.putExtra("lng", 106.602148);
+        startActivity(intent);
     }
 
     private void onSubmitClicked() {
@@ -95,7 +111,12 @@ public class ProductDetail2 extends AppCompatActivity {
     }
 
     private void onAddToCartClicked() {
-        Toast.makeText(ProductDetail2.this, "Added to cart...", Toast.LENGTH_SHORT).show();
+        mProductQuantity += Integer.parseInt(etOrderQuantity.getText().toString());
+        mAmount = mProductQuantity + mProductPrice;
+
+        tvOrderedProduct.setText(String.format(Locale.US, "%d", mProductQuantity));
+        tvTotalAmount.setText(String.format(Locale.US, "%.2f", mAmount));
+        etOrderQuantity.setText("");
     }
 
     private void setDataToView() {
@@ -106,7 +127,6 @@ public class ProductDetail2 extends AppCompatActivity {
         tvTotalAmount.setText(String.format(Locale.US, "$" + "%.2f", totalAmount));
         tvCompanyName.setText(mCompanyName);
         tvTel.setText(mTel);
-        tvEmail.setText(mEmail);
         imgProductImage.setImageResource(mProductImage);
     }
 }

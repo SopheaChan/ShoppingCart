@@ -79,7 +79,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 intent.putExtra("proQuantity", product.getProQuantity());
                 intent.putExtra("companyName", companyInfo.getCompanyName());
                 intent.putExtra("tel", companyInfo.getTel());
-                intent.putExtra("email", companyInfo.getEmail());
                 context.startActivity(intent);
             }
         });
@@ -101,6 +100,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             productImage = itemView.findViewById(R.id.productImage);
             productName = itemView.findViewById(R.id.tvProductName);
             productPrice = itemView.findViewById(R.id.tvProductPrice);

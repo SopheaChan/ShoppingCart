@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
-        <item android:title="Profile"
+        <item android:title="@string/profile"
             android:id="@+id/profile"
             android:icon="@drawable/ic_launcher_background"/>
-        <item android:title="Setting"
+        <item android:title="@string/setting"
             android:id="@+id/setting"
             android:icon="@drawable/ic_launcher_background"/>
-        <item android:title="Activity Log"
-            android:id="@+id/activity"
+        <item android:title="@string/location_and_maps"
+            android:id="@+id/location_and_maps"
             android:icon="@drawable/ic_launcher_background"/>
     </group>
-    <item android:title="Subheader">
+    <item android:title="@string/sub_header">
         <menu>
-            <item android:title="Ordered list"
+            <item android:title="@string/ordered_list"
                 android:id="@+id/ordered_list"/>
-            <item android:title="Sign out"
+            <item android:title="@string/sign_out"
                 android:id="@+id/sign_out"/>
         </menu>
     </item>
