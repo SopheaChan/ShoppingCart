@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.dell.myapplication.ProductDetail2;
+import com.example.dell.myapplication.ProductDetail;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
@@ -23,17 +23,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Product> productList;
     private AddProductToCartListener onAddClickListener;
     private DeleteProductFromCartListener onDeleteClickListener;
-    private ViewItemDetailListener onViewItemDetail;
     private Context context;
 
     public MyAdapter(Context context, List<Product> productList,
                      AddProductToCartListener listener,
-                     DeleteProductFromCartListener deleteListener,
-                     ViewItemDetailListener viewItemDetailListener) {
+                     DeleteProductFromCartListener deleteListener) {
         this.productList = productList;
         this.onAddClickListener = listener;
         this.onDeleteClickListener = deleteListener;
-        this.onViewItemDetail = viewItemDetailListener;
         this.context = context;
     }
 
@@ -72,7 +69,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         viewHolder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ProductDetail2.class);
+                Intent intent = new Intent(context, ProductDetail.class);
                 intent.putExtra("proImage", product.getProImage());
                 intent.putExtra("proName", product.getProName());
                 intent.putExtra("proPrice", product.getProPrice());
@@ -116,9 +113,5 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public interface DeleteProductFromCartListener {
         void onClick(Product mProduct, TextView productQuantity);
-    }
-
-    public interface ViewItemDetailListener {
-        void onClick();
     }
 }

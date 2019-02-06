@@ -7,29 +7,47 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.AvoidType;
+import com.akexorcist.googledirection.model.Direction;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Locale;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleMap.OnMapClickListener, LocationListener {
+        GoogleMap.OnMapClickListener, LocationListener{
 
     private GoogleMap mMap;
     private String mCompanyName;
     private double mCompanyLatitude;
     private double mCompanyLongitude;
-
+    private Toolbar mMapToolbar;
+    private LatLng mCurrentLocation;
+    private static int mMapType = GoogleMap.MAP_TYPE_NONE;
     private static final int REQUEST_LOCATION = 123;
+
+    private FloatingActionButton btnDirection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +59,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mMapToolbar = findViewById(R.id.mapsToolbar);
+        setActionBar(mMapToolbar);
+        if (getActionBar() != null){
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        btnDirection = findViewById(R.id.btnDirection);
+
         mCompanyName = getIntent().getStringExtra("companyName");
         mCompanyLatitude = getIntent().getDoubleExtra("lat", 0);
         mCompanyLongitude = getIntent().getDoubleExtra("lng", 0);
+
+//        btnDirection.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getDirection();
+//            }
+//        });
     }
+
+//    private void getDirection() {
+//        LatLng currentMarker = new LatLng(mCurrentLocation.latitude+3, mCurrentLocation.longitude+2);
+//        GoogleDirection.withServerKey("AIzaSyAuB_9ndViwmXq92wI6EwvZjR6PhKHiWIs")
+//                .from(mCurrentLocation)
+//                .to(currentMarker)
+//                .execute(new DirectionCallback() {
+//                    @Override
+//                    public void onDirectionSuccess(Direction direction, String rawBody) {
+//                        if (direction.isOK()){
+//                            Toast.makeText(MapsActivity.this, "Successfully obtained direction...", Toast.LENGTH_SHORT).show();
+//                        } else {
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onDirectionFailure(Throwable t) {
+//                        Toast.makeText(MapsActivity.this, "Fail to establish direction...", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//        Log.d("CurrentLatLng:", String.format(Locale.US, "%.2f", mCurrentLocation.latitude));
+//
+//    }
 
     private boolean checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -63,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.setMapType(mMapType);
 
         if (checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
@@ -72,6 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         getCompanyLocation();
         setupListener();
+
+//        DialogItemDetail dialog = new DialogItemDetail(this);
+//        dialog.setOnClickListener(callBack);
     }
 
     private void getCompanyLocation() {
@@ -117,7 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.setMinZoomPreference(6f);
         mMap.setMaxZoomPreference(13f);
     }
@@ -132,5 +193,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onProviderDisabled(String provider) {
+    }
+
+//    private OnDialogClick callBack = new OnDialogClick() {
+//        @Override
+//        public void onClick() {
+//            Toast.makeText(MapsActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+//        }
+//    };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.map_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.road_map:{
+                mMapType = GoogleMap.MAP_TYPE_NORMAL;
+                mMap.setMapType(mMapType);
+                break;
+            }
+            case R.id.satellite:{
+                mMapType = GoogleMap.MAP_TYPE_SATELLITE;
+                mMap.setMapType(mMapType);
+                break;
+            }
+            case R.id.terrain:{
+                mMapType = GoogleMap.MAP_TYPE_TERRAIN;
+                mMap.setMapType(mMapType);
+                break;
+            }
+            case R.id.hybrid:{
+                mMapType = GoogleMap.MAP_TYPE_HYBRID;
+                mMap.setMapType(mMapType);
+                break;
+            }
+            case 16908332:{
+                onBackPressed();
+                finish();
+            }
+            default: break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

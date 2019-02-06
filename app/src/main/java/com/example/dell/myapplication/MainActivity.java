@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.adapter.MyAdapter;
-import com.example.dell.myapplication.custom.DialogItemDetail;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private DialogMenu dialogMenu;
-    private DialogItemDetail dialogItemDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +114,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             + "\n" + "Amount: " + Double.toString(
                             mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();
                 }
-            }
-        }, new MyAdapter.ViewItemDetailListener() {
-            @Override
-            public void onClick() {
-                dialogItemDetail = new DialogItemDetail(MainActivity.this);
             }
         });
 
@@ -243,9 +236,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         CompanyInfo companyInfo2 = new CompanyInfo("SR Healthy Farm", "+855 16 622 666", "srhealthyfarm@gmail.com");
         Product product2 = new Product(R.drawable.fresh_milk1, "Fresh Milk", 7.8, 0, companyInfo2);
         CompanyInfo companyInfo3 = new CompanyInfo("Eco-famFarm", "+855 12 222 999", "eco-famfarm@gmail.com");
-        Product product3 = new Product(R.drawable.fresh_pork, "High-Quality Fresh Pork", 4.00, 0, companyInfo3);
-        CompanyInfo companyInfo4 = new CompanyInfo("Cambo-Farm", "+855 23 777 722", "cambo-farm@gmail.com");
-        Product product4 = new Product(R.drawable.giant_lobster, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
+        Product product3 = new Product(R.drawable.fresh_pork, "Fresh Pork", 4.00, 0, companyInfo3);
+//        CompanyInfo companyInfo4 = new CompanyInfo("Cambo-Farm", "+855 23 777 722", "cambo-farm@gmail.com");
+//        Product product4 = new Product(R.drawable.giant_lobster, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
         CompanyInfo companyInfo5 = new CompanyInfo("HC Community Farm", "+855 23 556 666", "hccommunityfarm@gmail.com");
         Product product5 = new Product(R.drawable.khmer_chicken, "Khmer Chicken", 3.1, 0, companyInfo5);
         CompanyInfo companyInfo6 = new CompanyInfo("Cambo Natural Farm", "+855 23 444 422", "cambonaturalfarm@gmail.com");
@@ -253,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mProductList.add(product1);
         mProductList.add(product2);
         mProductList.add(product3);
-        mProductList.add(product4);
+//        mProductList.add(product4);
         mProductList.add(product5);
         mProductList.add(product6);
         myAdapter.notifyDataSetChanged();
