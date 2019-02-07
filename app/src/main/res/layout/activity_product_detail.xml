@@ -306,6 +306,4 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
 
-
-
 </android.support.constraint.ConstraintLayout>

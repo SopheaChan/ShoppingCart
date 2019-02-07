@@ -17,7 +17,7 @@
         android:layout_height="60dp"
         android:elevation="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/boy_icon"/>
+        android:src="@drawable/boy_icon" />
 
     <TextView
         android:id="@+id/tvProfileName"
