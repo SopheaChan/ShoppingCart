@@ -10,9 +10,10 @@
         android:id="@+id/mapsToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="8dp">
+        android:elevation="14dp"
+        android:background="@drawable/maps_activity_toolbar_border">
 
-        <android.support.v7.widget.CardView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
@@ -23,8 +24,9 @@
                 android:id="@+id/svSearchPlace"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                app:queryHint="Search place by category" />
-        </android.support.v7.widget.CardView>
+                app:queryHint="Search place by category"
+                android:layoutDirection="rtl"/>
+        </RelativeLayout>
     </Toolbar>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

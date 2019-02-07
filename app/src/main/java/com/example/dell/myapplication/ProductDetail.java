@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dell.myapplication.custom.PushNotification;
+
 import java.util.Locale;
 
 public class ProductDetail extends AppCompatActivity {
@@ -103,6 +105,7 @@ public class ProductDetail extends AppCompatActivity {
     }
 
     private void onSubmitClicked() {
+        new PushNotification(ProductDetail.this, mCompanyName, mProductName);
         Toast.makeText(ProductDetail.this, "Submitted order...", Toast.LENGTH_SHORT).show();
     }
 
@@ -112,7 +115,7 @@ public class ProductDetail extends AppCompatActivity {
 
     private void onAddToCartClicked() {
         mProductQuantity += Integer.parseInt(etOrderQuantity.getText().toString());
-        mAmount = mProductQuantity + mProductPrice;
+        mAmount = mProductQuantity * mProductPrice;
 
         tvOrderedProduct.setText(String.format(Locale.US, "%d", mProductQuantity));
         tvTotalAmount.setText(String.format(Locale.US, "%.2f", mAmount));

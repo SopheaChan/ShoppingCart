@@ -59,6 +59,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FloatingActionButton btnDirection;
     private android.support.v7.widget.SearchView svSearchNearbyPlace;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        mMapToolbar = findViewById(R.id.mapsToolbar);
+        setActionBar(mMapToolbar);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        btnDirection = findViewById(R.id.btnDirection);
+        svSearchNearbyPlace = findViewById(R.id.svSearchPlace);
+        svSearchNearbyPlace.setOnQueryTextListener(this);
+
+        mCompanyName = getIntent().getStringExtra("companyName");
+        mCompanyLatitude = getIntent().getDoubleExtra("lat", 0);
+        mCompanyLongitude = getIntent().getDoubleExtra("lng", 0);
+
+        btnDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDirection();
+            }
+        });
+    }
+
     private void getDirection() {
         final LatLng currentMarker = new LatLng(mCurrentLocation.latitude + 3, mCurrentLocation.longitude + 2);
         GoogleDirection.withServerKey("AIzaSyAuB_9ndViwmXq92wI6EwvZjR6PhKHiWIs")
@@ -150,38 +182,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        mMapToolbar = findViewById(R.id.mapsToolbar);
-        setActionBar(mMapToolbar);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        btnDirection = findViewById(R.id.btnDirection);
-        svSearchNearbyPlace = findViewById(R.id.svSearchPlace);
-        svSearchNearbyPlace.setOnQueryTextListener(this);
-
-        mCompanyName = getIntent().getStringExtra("companyName");
-        mCompanyLatitude = getIntent().getDoubleExtra("lat", 0);
-        mCompanyLongitude = getIntent().getDoubleExtra("lng", 0);
-
-        btnDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDirection();
-            }
-        });
     }
 
     @Override

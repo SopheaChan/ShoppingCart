@@ -45,20 +45,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private TextView tvTotalPrice;
 
-    private NavigationView navigationView;
     private View headerView;
     private CircleImageView profileImage;
-    private OnDialogClickListener onDialogClick;
-    private ProfileImageView profileImageView;
-    private ProfileImageViewOnClickListener tvProfileImageViewOnClickListener;
-
     private Uri mProfileUri;
     private Bitmap mProfileBitmap;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    private DialogMenu dialogMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogMenu = new DialogMenu(MainActivity.this, onDialogClick = new OnDialogClickListener() {
+                new DialogMenu(MainActivity.this, new OnDialogClickListener() {
                     @Override
                     public void onItemClickListener(final int result, View view, final Dialog dialog) {
                         checkDeviceCamera(view);
@@ -146,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             }
                             case 3: {
-                                profileImageView = new ProfileImageView(MainActivity.this, mProfileUri, mProfileBitmap,
-                                        tvProfileImageViewOnClickListener = new ProfileImageViewOnClickListener() {
+                                new ProfileImageView(MainActivity.this, mProfileUri, mProfileBitmap,
+                                        new ProfileImageViewOnClickListener() {
                                             @Override
                                             public void onClickListener(int resultCode, View v, Dialog dialog1) {
                                                 if (resultCode == 1) {
