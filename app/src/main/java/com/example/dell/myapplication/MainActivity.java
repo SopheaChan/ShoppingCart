@@ -1,5 +1,6 @@
 package com.example.dell.myapplication;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,33 +27,39 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogMenu;
+import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.model.UserInfo;
 
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import javax.xml.transform.Result;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    RecyclerView recyclerView;
-    MyAdapter myAdapter;
+    private MyAdapter myAdapter;
+
     private List<Product> mProductList = new ArrayList<>();
 
     private TextView tvTotalPrice;
 
-    private View headerView;
     private CircleImageView profileImage;
+    private TextView tvUserName;
     private Uri mProfileUri;
     private Bitmap mProfileBitmap;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_CAMERA_PERMISSION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Button btnCheckout = findViewById(R.id.button_check_out);
         tvTotalPrice = findViewById(R.id.total_price);
 
-        recyclerView = findViewById(R.id.my_recyclerview);
+        RecyclerView recyclerView = findViewById(R.id.my_recyclerview);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -119,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         navigationView = findViewById(R.id.navigation_view);
 
-        headerView = navigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
+        tvUserName = headerView.findViewById(R.id.tvProfileName);
         profileImage = headerView.findViewById(R.id.imgProfilePhoto);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +144,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             }
                             case 2: {
-                                dispatchTakePictureIntent(dialog);
+                                if (checkCameraPermission()) {
+                                    dispatchTakePictureIntent();
+                                }
                                 break;
                             }
                             case 3: {
@@ -175,11 +186,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void dispatchTakePictureIntent(Dialog dialog) {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            dialog.dismiss();
+//            dialog.dismiss();
         }
     }
 
@@ -191,10 +202,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            dispatchTakePictureIntent();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
+            mProfileBitmap = null;
             mProfileUri = imageUri;
             Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
             Log.d("ProfileUri", String.valueOf(mProfileUri));
@@ -202,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mProfileUri = null;
             mProfileBitmap = imageBitmap;
             Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
             Log.d("ProfileUri", String.valueOf(mProfileUri));
@@ -250,6 +271,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemID = menuItem.getItemId();
         switch (itemID) {
             case R.id.profile: {
+                String userName = tvUserName.getText().toString();
+                UserInfo userInfo = new UserInfo(mProfileUri, userName, "Male", "096 364 463",
+                        "jaydev@gmail.com", "N/A");
+                new DisplayProfileInfo(this, userInfo);
                 Toast.makeText(this, "Navigation menu clicked Profile", Toast.LENGTH_SHORT).show();
                 break;
             }
@@ -272,6 +297,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 break;
         }
+        return true;
+    }
+
+    private boolean checkCameraPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+            return false;
+        }
+
         return true;
     }
 

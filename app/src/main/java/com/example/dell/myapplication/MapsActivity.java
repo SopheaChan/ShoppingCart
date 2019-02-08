@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -120,6 +121,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
         Log.d("CurrentLatLng:", String.format(Locale.US, "%.2f", mCurrentLocation.latitude));
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION){
+            if (checkLocationPermission()) {
+                mMap.setMyLocationEnabled(true);
+                LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            }
+        }
     }
 
     private boolean checkLocationPermission() {

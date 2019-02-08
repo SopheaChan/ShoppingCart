@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="50dp"
-        android:fontFamily="@font/raleway"
+        android:fontFamily="@font/railway"
         android:gravity="center"
         android:text="Shopping Cart"
         android:textAlignment="gravity"

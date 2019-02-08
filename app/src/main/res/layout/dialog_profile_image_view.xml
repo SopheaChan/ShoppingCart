@@ -22,7 +22,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/dialog_menu_shape"
         android:elevation="10dp"
-        android:fontFamily="@font/raleway"
+        android:fontFamily="@font/railway"
         android:text="Done"
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
