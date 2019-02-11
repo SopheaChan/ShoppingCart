@@ -1,4 +1,4 @@
-package com.example.dell.myapplication;
+package com.example.dell.myapplication.ui.map;
 
 import android.Manifest;
 import android.content.Context;
@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.dell.myapplication.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

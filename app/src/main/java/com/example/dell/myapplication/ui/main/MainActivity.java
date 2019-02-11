@@ -1,4 +1,4 @@
-package com.example.dell.myapplication;
+package com.example.dell.myapplication.ui.main;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -25,7 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.MyAdapter;
+import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
@@ -35,13 +37,10 @@ import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.UserInfo;
 
-import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import javax.xml.transform.Result;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -60,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 2;
+
+    private MainMvpPresenter mainMvpPresenter = new MainPresenter(MainActivity.this);
+    private DialogDisplayLoadingProgress displayLoadingProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        displayLoadingProgress = new DialogDisplayLoadingProgress(MainActivity.this);
 
         myAdapter = new MyAdapter(this, mProductList, new MyAdapter.AddProductToCartListener() {
             @Override
@@ -274,8 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String userName = tvUserName.getText().toString();
                 UserInfo userInfo = new UserInfo(mProfileUri, userName, "Male", "096 364 463",
                         "jaydev@gmail.com", "N/A");
-                new DisplayProfileInfo(this, userInfo);
-                Toast.makeText(this, "Navigation menu clicked Profile", Toast.LENGTH_SHORT).show();
+                mainMvpPresenter.viewProfile(MainActivity.this, userInfo);
                 break;
             }
             case R.id.location_and_maps: {
@@ -291,7 +294,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.sign_out: {
-                Toast.makeText(this, "Navigation menu clicked Sign out", Toast.LENGTH_SHORT).show();
+                displayLoadingProgress.displayLoadingProgress();
+                mainMvpPresenter.onSignOut(this, displayLoadingProgress.getDialog());
                 break;
             }
             default:

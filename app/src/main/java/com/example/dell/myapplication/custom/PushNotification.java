@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
-import com.example.dell.myapplication.MainActivity;
+import com.example.dell.myapplication.ui.main.MainActivity;
 import com.example.dell.myapplication.R;
 
 public class PushNotification {

@@ -9,7 +9,7 @@
     android:padding="16dp"
 
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgProfilePhoto"

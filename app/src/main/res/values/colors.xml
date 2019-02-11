@@ -8,4 +8,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorSeaWater">#4286f4</color>
     <color name="colorLightBlue">#0a58d6</color>
+    <color name="colorHint">#808084</color>
 </resources>

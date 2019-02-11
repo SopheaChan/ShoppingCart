@@ -1,4 +1,4 @@
-package com.example.dell.myapplication;
+package com.example.dell.myapplication.ui.product;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.PushNotification;
+import com.example.dell.myapplication.ui.map.MapsActivity;
 
 import java.util.Locale;
 

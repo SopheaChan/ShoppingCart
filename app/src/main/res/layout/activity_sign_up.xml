@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.sign_up.SignUpActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitleLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/railway"
+            android:padding="5dp"
+            android:text="Cam e-Mall"
+            android:textAlignment="center"
+            android:textColor="@color/colorLightBlue"
+            android:textSize="46sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSignUpLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/railway"
+            android:text="Sign up now!!!"
+            android:textAlignment="center"
+            android:textColor="@color/colorLightBlue"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/tvTitleLabel"
+            app:layout_constraintStart_toStartOf="@id/tvTitleLabel"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleLabel" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bodyLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="@id/headerLayout"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <ImageView
+            android:id="@+id/imgSignUpProfile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="46dp"
+            android:elevation="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_image_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="32dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="32dp"
+        app:layout_constraintEnd_toEndOf="@id/bodyLayout"
+        app:layout_constraintStart_toStartOf="@id/bodyLayout"
+        app:layout_constraintTop_toBottomOf="@id/bodyLayout">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/railway"
+                android:hint="Name"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            app:layout_constraintEnd_toEndOf="@id/etName"
+            app:layout_constraintStart_toStartOf="@id/etName"
+            app:layout_constraintTop_toBottomOf="@id/etName">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/railway"
+                android:hint="Gender"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etTel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            app:layout_constraintEnd_toEndOf="@id/etGender"
+            app:layout_constraintStart_toStartOf="@id/etGender"
+            app:layout_constraintTop_toBottomOf="@id/etGender">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/railway"
+                android:hint="Tel"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            app:layout_constraintEnd_toEndOf="@id/etTel"
+            app:layout_constraintStart_toStartOf="@id/etTel"
+            app:layout_constraintTop_toBottomOf="@id/etTel">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/railway"
+                android:hint="Email"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/etOtherContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintTop_toBottomOf="@id/etEmail">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/railway"
+                android:hint="Other contact"
+                android:textSize="16sp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/railway"
+            android:text="Sign Up"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/etOtherContact"
+            app:layout_constraintStart_toStartOf="@id/etOtherContact"
+            app:layout_constraintTop_toBottomOf="@id/etOtherContact" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

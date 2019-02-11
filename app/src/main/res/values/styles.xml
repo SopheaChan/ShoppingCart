@@ -15,4 +15,9 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="InputTextLayoutHintText" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/colorHint</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

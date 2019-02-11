@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.example.dell.myapplication.R;
-import com.example.dell.myapplication.ui.LoginMvpView;
 
 import java.util.Objects;
 
@@ -17,10 +16,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DialogDisplayLoadingProgress {
     private Dialog dialog;
+    private Context context;
 
-    public  DialogDisplayLoadingProgress(Context context, final LoginMvpView loginSuccessListener){
+    public  DialogDisplayLoadingProgress(Context context){
+        this.context = context;
+    }
 
-        this.dialog = new Dialog(context, R.style.DialogTheme);
+    public void displayLoadingProgress(){
+        dialog = new Dialog(context, R.style.DialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_loading_progress);
         Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER);
@@ -41,8 +44,6 @@ public class DialogDisplayLoadingProgress {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                loginSuccessListener.onLoginSuccess();
-                dialog.dismiss();
 
             }
 
@@ -51,6 +52,8 @@ public class DialogDisplayLoadingProgress {
 
             }
         });
-
+    }
+    public Dialog getDialog(){
+        return this.dialog;
     }
 }

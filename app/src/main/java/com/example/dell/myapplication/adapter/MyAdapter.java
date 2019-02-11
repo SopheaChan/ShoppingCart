@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.dell.myapplication.ProductDetail;
+import com.example.dell.myapplication.ui.product.ProductDetail;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;

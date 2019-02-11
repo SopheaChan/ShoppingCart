@@ -5,60 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.login.LoginActivity">
 
-    <android.support.v7.widget.CardView
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
-        android:background="@drawable/login_header_shape"
-        app:cardElevation="12dp"
-        app:layout_constraintStart_toEndOf="parent"
+        android:elevation="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <TextView
+            android:id="@+id/tvLoginTitle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/backgroundColor">
-
-            <TextView
-                android:id="@+id/tvLoginTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
-                android:elevation="8dp"
-                android:fontFamily="@font/railway"
-                android:text="Cam e-Mall"
-                android:textAlignment="center"
-                android:textColor="@color/colorWhite"
-                android:textSize="46sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:elevation="8dp"
+            android:fontFamily="@font/railway"
+            android:text="Cam e-Mall"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="46sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="18dp"
         android:background="@drawable/login_input_text_shape"
         android:elevation="8dp"
+        android:gravity="center"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="@id/guideline"
+        app:hintTextAppearance="@style/InputTextLayoutHintText">
 
-        <android.support.design.widget.TextInputEditText
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/railway"
@@ -69,21 +64,25 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/etPassword"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:background="@drawable/login_input_text_shape"
         android:elevation="8dp"
+        android:gravity="center"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         app:layout_constraintEnd_toEndOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="@id/etEmail"
-        app:layout_constraintTop_toBottomOf="@id/etEmail">
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        app:passwordToggleEnabled="true"
+        app:hintTextAppearance="@style/InputTextLayoutHintText">
 
-        <android.support.design.widget.TextInputEditText
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/railway"
             android:hint="Password"
+            android:inputType="textPassword"
             android:textSize="16sp" />
     </android.support.design.widget.TextInputLayout>
 
@@ -108,7 +107,7 @@
         android:fontFamily="@font/railway"
         android:text="No account?"
         android:textColor="@color/colorLightBlue"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -120,8 +119,15 @@
         android:layout_marginStart="8dp"
         android:text="Sign up."
         android:textColor="@color/colorLightBlue"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/tvSignUpLabel"
         app:layout_constraintStart_toEndOf="@id/tvSignUpLabel"
         app:layout_constraintTop_toTopOf="@id/tvSignUpLabel" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.34336525" />
 </android.support.constraint.ConstraintLayout>
