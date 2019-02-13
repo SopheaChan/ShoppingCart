@@ -6,6 +6,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--<item name="android:windowContentTransitions">true</item>-->
+        <!--<item name="android:windowActivityTransitions">true</item>-->
+        <!--<item name="android:windowEnterTransition">@transition/change_activity_transform</item>-->
+        <!--<item name="android:windowExitTransition">@transition/change_activity_transform</item>-->
+        <!--<item name="android:windowSharedElementEnterTransition">-->
+            <!--@transition/change_activity_transform</item>-->
+        <!--<item name="android:windowSharedElementExitTransition">-->
+            <!--@transition/change_activity_transform</item>-->
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">

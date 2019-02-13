@@ -12,18 +12,23 @@ import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.ui.sign_up.SignUpActivity;
 import com.example.dell.myapplication.ui.sign_up.SignUpMvpView;
 
+import java.util.Objects;
+
 public class DialogChooseImageForSignUp implements View.OnClickListener {
     private Dialog dialog;
     private Context context;
-    private SignUpMvpView signUpMvpView = new SignUpActivity();
+    private SignUpMvpView mSignUpMvpView;
 
-    public DialogChooseImageForSignUp(Context context){
+    public DialogChooseImageForSignUp(Context context, SignUpMvpView signUpMvpView){
         this.context = context;
+        this.mSignUpMvpView = signUpMvpView;
+    }
 
-        this.dialog = new Dialog(context, R.style.DialogTheme);
+    public void displayDialog(){
+        dialog = new Dialog(context, R.style.DialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_choose_profile_photo_for_sign_up);
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.BOTTOM);
         dialog.getWindow().setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT
@@ -39,17 +44,22 @@ public class DialogChooseImageForSignUp implements View.OnClickListener {
         tvCancel.setOnClickListener(this);
     }
 
+    public Dialog getDialog(){
+        return this.dialog;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tvGallery: {
-                signUpMvpView.chooseImageFromGallery();
+                mSignUpMvpView.chooseImageFromGallery();
                 break;
             }
             case R.id.tvTakePhoto: {
 
             }
             case R.id.tvCancel: {
+                dialog.dismiss();
                 break;
             }
             default:

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.example.dell.myapplication.R;
@@ -45,6 +47,7 @@ public class LoginPresenter implements LoginMvpPresenter {
                         mLoginMvpView.onLoginFailed();
                         Snackbar.make(((Activity) context).findViewById(R.id.btnLogin), e.getMessage(),
                                 Snackbar.LENGTH_SHORT).show();
+                        Log.d("Error:", e.toString());
                     }
                 });
     }

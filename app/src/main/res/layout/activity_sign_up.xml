@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toTopOf="@id/bodyLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -48,18 +49,20 @@
         android:id="@+id/bodyLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/footerLayout"
         app:layout_constraintEnd_toEndOf="@id/headerLayout"
         app:layout_constraintStart_toStartOf="@id/headerLayout"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <ImageView
             android:id="@+id/imgSignUpProfile"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="46dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
             android:elevation="8dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_image_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -76,105 +79,90 @@
         app:layout_constraintStart_toStartOf="@id/bodyLayout"
         app:layout_constraintTop_toBottomOf="@id/bodyLayout">
 
-        <android.support.design.widget.TextInputLayout
+        <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:fontFamily="@font/railway"
+            android:hint="Name"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            android:singleLine="true"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/railway"
-                android:hint="Name"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <EditText
             android:id="@+id/etGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:fontFamily="@font/railway"
+            android:hint="Gender"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            android:singleLine="true"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/etName"
             app:layout_constraintStart_toStartOf="@id/etName"
-            app:layout_constraintTop_toBottomOf="@id/etName">
+            app:layout_constraintTop_toBottomOf="@id/etName" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/railway"
-                android:hint="Gender"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <EditText
             android:id="@+id/etTel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:fontFamily="@font/railway"
+            android:hint="Tel"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            android:singleLine="true"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/etGender"
             app:layout_constraintStart_toStartOf="@id/etGender"
-            app:layout_constraintTop_toBottomOf="@id/etGender">
+            app:layout_constraintTop_toBottomOf="@id/etGender" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/railway"
-                android:hint="Tel"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:fontFamily="@font/railway"
+            android:hint="Email"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            app:hintTextAppearance="@style/InputTextLayoutHintText"
+            android:singleLine="true"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/etTel"
             app:layout_constraintStart_toStartOf="@id/etTel"
-            app:layout_constraintTop_toBottomOf="@id/etTel">
+            app:layout_constraintTop_toBottomOf="@id/etTel" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/railway"
-                android:hint="Email"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/railway"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:singleLine="true"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/etEmail"
+            app:layout_constraintStart_toStartOf="@id/etEmail"
+            app:layout_constraintTop_toBottomOf="@id/etEmail" />
 
-        <android.support.design.widget.TextInputLayout
+        <EditText
             android:id="@+id/etOtherContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:fontFamily="@font/railway"
+            android:hint="Other contact (optional)"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            app:hintTextAppearance="@style/InputTextLayoutHintText"
-            app:layout_constraintEnd_toEndOf="@id/etEmail"
-            app:layout_constraintStart_toStartOf="@id/etEmail"
-            app:layout_constraintTop_toBottomOf="@id/etEmail">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/railway"
-                android:hint="Other contact"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
+            android:singleLine="true"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/etPassword"
+            app:layout_constraintStart_toStartOf="@id/etPassword"
+            app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
         <Button
             android:id="@+id/btnSignUp"

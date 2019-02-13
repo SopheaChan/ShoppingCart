@@ -7,6 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.example.dell.myapplication.R;
 
@@ -22,7 +23,7 @@ public class DialogDisplayLoadingProgress {
         this.context = context;
     }
 
-    public void displayLoadingProgress(){
+    public void displayLoadingProgress(String title){
         dialog = new Dialog(context, R.style.DialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_loading_progress);
@@ -34,6 +35,8 @@ public class DialogDisplayLoadingProgress {
         dialog.show();
 
         CircleImageView imgLoading = dialog.findViewById(R.id.imgLoadingProgress);
+        TextView tvTitle = dialog.findViewById(R.id.tvLoadingLabel);
+        tvTitle.setText(title);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         imgLoading.setAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {

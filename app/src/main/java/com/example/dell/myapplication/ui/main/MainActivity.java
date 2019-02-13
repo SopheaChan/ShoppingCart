@@ -11,15 +11,19 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +40,13 @@ import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private MainMvpPresenter mainMvpPresenter = new MainPresenter(MainActivity.this);
     private DialogDisplayLoadingProgress displayLoadingProgress;
+    private ProfileImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCheckout(mProductList);
+                mainMvpPresenter.onCheckOutClickedListener(mProductList, tvTotalPrice);
             }
         });
         navigationView = findViewById(R.id.navigation_view);
@@ -144,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         checkDeviceCamera(view);
                         switch (result) {
                             case 1: {
-                                openGallery(dialog);
+                                mainMvpPresenter.onOpenGallery(MainActivity.this, dialog);
                                 break;
                             }
                             case 2: {
@@ -154,17 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             }
                             case 3: {
-                                new ProfileImageView(MainActivity.this, mProfileUri, mProfileBitmap,
-                                        new ProfileImageViewOnClickListener() {
-                                            @Override
-                                            public void onClickListener(int resultCode, View v, Dialog dialog1) {
-                                                if (resultCode == 1) {
-                                                    dialog1.dismiss();
-                                                } else {
-                                                    Toast.makeText(MainActivity.this, "Have done nothing...", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
+                                mainMvpPresenter.onViewProfileImage();
                                 dialog.dismiss();
                                 break;
                             }
@@ -179,6 +181,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         setDataToList();
+    }
+
+        @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            onBackPressed();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void checkDeviceCamera(View view) {
@@ -198,12 +213,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void openGallery(Dialog dialog) {
-        Intent intent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_GALLERY_ACCESS);
-        dialog.dismiss();
-    }
+//    private void openGallery(Dialog dialog) {
+//        Intent intent = new Intent(Intent.ACTION_PICK,
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(intent, REQUEST_GALLERY_ACCESS);
+//        dialog.dismiss();
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -214,14 +229,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            mProfileBitmap = null;
-            mProfileUri = imageUri;
-            Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
-            Log.d("ProfileUri", String.valueOf(mProfileUri));
+            profileImageView = new ProfileImageView(MainActivity.this, imageUri, "Upload");
+            profileImageView.onDisplayProfilePicture(new ProfileImageViewOnClickListener() {
+                @Override
+                public void onClickListener(String buttonTitle, Dialog dialog) {
+                    if (buttonTitle.equalsIgnoreCase("upload")){
+                        Toast.makeText(MainActivity.this, "Uploading...", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
             Glide.with(MainActivity.this).load(imageUri).into(profileImage);
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
@@ -236,19 +256,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    //Called when checkout button is clicked...
-    private void onCheckout(@org.jetbrains.annotations.NotNull List<Product> proList) {
-        double totalAmount = 0.0;
-        String dollarSymbol = "$";
-        for (int i = 0; i < proList.size(); i++) {
-            Product product = proList.get(i);
-            totalAmount += product.getProPrice() * product.getProQuantity();
-        }
-        //Split the number after the dot of total amount, only two characters will be taken
-        tvTotalPrice.setText(String.format(Locale.US, dollarSymbol + "%.2f", totalAmount));
-    }
-
     private void setDataToList() {
+        mainMvpPresenter.onLoadUserInfo(MainActivity.this, tvUserName, profileImage);
         CompanyInfo companyInfo1 = new CompanyInfo("Dream Farm", "+855 16 552 693", "dreamfarm@gmail.com");
         Product product1 = new Product(R.drawable.black_burger, "Black Burger", 5.6, 0, companyInfo1);
         CompanyInfo companyInfo2 = new CompanyInfo("SR Healthy Farm", "+855 16 622 666", "srhealthyfarm@gmail.com");
@@ -275,10 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemID = menuItem.getItemId();
         switch (itemID) {
             case R.id.profile: {
-                String userName = tvUserName.getText().toString();
-                UserInfo userInfo = new UserInfo(mProfileUri, userName, "Male", "096 364 463",
-                        "jaydev@gmail.com", "N/A");
-                mainMvpPresenter.viewProfile(MainActivity.this, userInfo);
+                mainMvpPresenter.onViewProfileClicked();
                 break;
             }
             case R.id.location_and_maps: {
@@ -294,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.sign_out: {
-                displayLoadingProgress.displayLoadingProgress();
+                displayLoadingProgress.displayLoadingProgress("Logging out...");
                 mainMvpPresenter.onSignOut(this, displayLoadingProgress.getDialog());
                 break;
             }

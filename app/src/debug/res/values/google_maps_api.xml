@@ -21,6 +21,8 @@
     string in this file.
 
     Map direction api key = AIzaSyAuB_9ndViwmXq92wI6EwvZjR6PhKHiWIs
+    New maps api = AIzaSyCpca59yvgoBLPRw2yyP-hHivvpcoO3hrk
+    Old maps api = AIzaSyCV-YPSD5I8uBBT_zrNVVLULMc_ARazzrE
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCV-YPSD5I8uBBT_zrNVVLULMc_ARazzrE</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAjZhFkknKof0QER1PxyzbDB_2pvR1E4qk</string>
 </resources>

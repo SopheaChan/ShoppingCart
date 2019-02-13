@@ -287,7 +287,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean onQueryTextSubmit(String query) {
         String placeName = query.toLowerCase();
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
-                + mCurrentLocation.latitude + "," + mCurrentLocation.longitude + "&radius=500&type=" + placeName + "&key=AIzaSyAuB_9ndViwmXq92wI6EwvZjR6PhKHiWIs";
+                + mCurrentLocation.latitude + "," + mCurrentLocation.longitude + "&radius=500&type=" + placeName + "&key=AIzaSyAjZhFkknKof0QER1PxyzbDB_2pvR1E4qk";
         RequestQueue requestQueue = Volley.newRequestQueue(MapsActivity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
