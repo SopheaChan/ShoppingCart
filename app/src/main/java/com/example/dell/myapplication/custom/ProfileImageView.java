@@ -20,6 +20,8 @@ public class ProfileImageView {
     private Uri profileUri;
     private String buttonTitle;
 
+    private Button btnDone;
+
     public ProfileImageView(Context context, Uri profileUri, String buttonTitle){
         this.context = context;
         this.profileUri = profileUri;
@@ -44,7 +46,7 @@ public class ProfileImageView {
         dialog.show();
 
         ImageView mProfileImage = dialog.findViewById(R.id.imgProfileImage);
-        final Button btnDone = dialog.findViewById(R.id.btnDone);
+        btnDone = dialog.findViewById(R.id.btnDone);
         if (buttonTitle != null){
             btnDone.setText(buttonTitle);
         }
@@ -58,5 +60,13 @@ public class ProfileImageView {
         if (profileUri != null) {
             Glide.with(this.context).load(profileUri).into(mProfileImage);
         }
+    }
+
+    public void setButtonTitle(String title){
+        btnDone.setText(title);
+    }
+
+    public Dialog getProfileImageView(){
+        return this.dialog;
     }
 }

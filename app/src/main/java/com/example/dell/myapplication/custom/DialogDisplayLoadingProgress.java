@@ -30,7 +30,7 @@ public class DialogDisplayLoadingProgress {
         Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER);
         dialog.getWindow().setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
+                WindowManager.LayoutParams.MATCH_PARENT
         );
         dialog.show();
 

@@ -10,18 +10,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.dell.myapplication.R;
-import com.example.dell.myapplication.ui.sign_up.SignUpMvpView;
+
 import java.util.Objects;
 
 public class DialogAlertMessage implements View.OnClickListener {
     private Dialog dialog;
     private Context context;
+    private ButtonSkipListener mSkip;
 
-    public DialogAlertMessage(Context context){
+    public DialogAlertMessage(Context context, ButtonSkipListener skip) {
         this.context = context;
+        this.mSkip = skip;
     }
 
-    public void onDisplayAlertMessage(String alertTitle, String alertMessage){
+    public void onDisplayAlertMessage(String alertTitle, String alertMessage) {
         dialog = new Dialog(context, R.style.DialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_alert_message);
@@ -47,16 +49,21 @@ public class DialogAlertMessage implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnBack: {
                 dialog.dismiss();
                 break;
             }
             case R.id.btnSkip: {
+                mSkip.onSkipListener(dialog);
                 break;
             }
             default:
                 break;
         }
+    }
+
+    public interface ButtonSkipListener{
+        void onSkipListener(Dialog dialog);
     }
 }

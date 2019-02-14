@@ -7,10 +7,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.example.dell.myapplication.ui.main.MainActivity;
 import com.example.dell.myapplication.R;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class PushNotification {
     private static final int NOTIFICATION_ID = 1;
     private static final String NOTIFICATION_CHANNEL_ID= "4565";

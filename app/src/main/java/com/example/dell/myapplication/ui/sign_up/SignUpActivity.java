@@ -1,9 +1,15 @@
 package com.example.dell.myapplication.ui.sign_up;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Picture;
+import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +18,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +32,14 @@ import com.example.dell.myapplication.custom.DialogAlertMessage;
 import com.example.dell.myapplication.custom.DialogChooseImageForSignUp;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.model.UserInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.io.File;
+import java.text.Format;
+import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, SignUpMvpView {
     private ImageView imgUserProfile;
@@ -42,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private static final int REQUEST_EXTERNAL_STORAGE_ACCESS = 1;
     private static final int REQUEST_IMAGE_FROM_GALLERY = 2;
 
-    private SignUpMvpPresenter signUpMvpPresenter = new SignUpPresenter();
+    private SignUpMvpPresenter signUpMvpPresenter = new SignUpPresenter(this);
     private DialogDisplayLoadingProgress displayLoadingProgress;
     DialogAlertMessage dialogAlertMessage;
 
@@ -60,7 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         etOtherContact = findViewById(R.id.etOtherContact);
         btnSignUp = findViewById(R.id.btnSignUp);
         displayLoadingProgress = new DialogDisplayLoadingProgress(this);
-        dialogAlertMessage = new DialogAlertMessage(this);
+        dialogAlertMessage = new DialogAlertMessage(this, onSkipListener);
 
         btnSignUp.setOnClickListener(this);
         imgUserProfile.setOnClickListener(this);
@@ -82,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
                 String otherContact = etOtherContact.getText().toString();
-                onSignUpValidation(imgProfilePicture, name, gender, tel, email,password, otherContact);
+                onSignUpValidation(imgProfilePicture, name, gender, tel, email, password, otherContact);
                 break;
             }
         }
@@ -93,6 +108,18 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (requestGalleryAccessPermission()) {
             openGallery();
         }
+    }
+
+    @Override
+    public void onDefaultProfileLoadingSuccess(String imageUri) {
+        String name = etName.getText().toString();
+        String gender = etGender.getText().toString();
+        String tel = etTel.getText().toString();
+        String email = etEmail.getText().toString();
+        String password = etPassword.getText().toString();
+        String otherContact = etOtherContact.getText().toString();
+        UserInfo userInfo = new UserInfo(imageUri, name, gender, tel, email, otherContact);
+        signUpMvpPresenter.onSignUpWithoutProfilePicture(SignUpActivity.this, userInfo, password, imageUri, displayLoadingProgress);
     }
 
     private void openGallery() {
@@ -131,37 +158,31 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     //Validate data before process sign up progress
     private void onSignUpValidation(final Uri profileImageUri, final String name, final String gender,
                                     final String tel, final String email, final String password, String otherContact) {
-        if (name.isEmpty() || gender.isEmpty()
-                || tel.isEmpty() || email.isEmpty() || (!Patterns.EMAIL_ADDRESS.matcher(email).matches())) {
+        if (name.isEmpty() || gender.isEmpty() || tel.isEmpty() || email.isEmpty() || (!Patterns.EMAIL_ADDRESS.matcher(email).matches())) {
 
-            if (name.isEmpty()){
+            if (name.isEmpty()) {
                 etName.setError("Name cannot be blank!");
             }
-            if (gender.isEmpty()){
+            if (gender.isEmpty()) {
                 etGender.setError("Gender cannot be blank!");
             }
-            if (tel.isEmpty()){
+            if (tel.isEmpty()) {
                 etTel.setError("Phone number cannot be blank!");
             }
-            if (password.length()<6){
+            if (password.length() < 6) {
                 etPassword.setError("Password cannot be less than 6 characters!");
             }
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 etEmail.setError("Invalid email address!");
             }
             return;
-        }
-        else {
-            if (otherContact.isEmpty()) {
-                otherContact = "N/A";
-            }
-            if (profileImageUri == null){
+        } else {
+            if (profileImageUri == null) {
                 dialogAlertMessage.onDisplayAlertMessage("Alert",
                         "You have not choose your profile picture yet.\n" +
                                 "Click on the photo area to browse your profile picture.\n" +
                                 "Click skip if you want to continue sign up without your profile picture.");
-            }
-            else {
+            } else {
                 displayLoadingProgress.displayLoadingProgress("Registering...");
                 userInfo = new UserInfo(profileImageUri.toString(), name, gender, tel, email, otherContact);
                 signUpMvpPresenter.onSignUpUser(SignUpActivity.this, userInfo, password, displayLoadingProgress);
@@ -174,4 +195,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onBackPressed();
         finish();
     }
+
+    private DialogAlertMessage.ButtonSkipListener onSkipListener = new DialogAlertMessage.ButtonSkipListener() {
+        @Override
+        public void onSkipListener(Dialog dialog) {
+            dialog.dismiss();
+            displayLoadingProgress.displayLoadingProgress("Signing up...");
+            signUpMvpPresenter.onGetDefaultProfileUrl();
+        }
+    };
 }

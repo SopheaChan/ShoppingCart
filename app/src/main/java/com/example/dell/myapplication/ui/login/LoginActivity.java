@@ -86,8 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         /*process activity transition
         startActivity(new Intent(LoginActivity.this, MainActivity.class),
                 ActivityOptions.makeSceneTransitionAnimation(this).toBundle());*/
-        startActivity(new Intent(LoginActivity.this, MainActivity.class),
-                ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
         mDisplayLoadingProgress.getDialog().dismiss();
         finish();
     }

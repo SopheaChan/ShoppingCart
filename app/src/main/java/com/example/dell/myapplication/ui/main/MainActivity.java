@@ -11,43 +11,29 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
-import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
-import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
-import com.example.dell.myapplication.model.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -64,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private CircleImageView profileImage;
     private TextView tvUserName;
-    private Uri mProfileUri;
-    private Bitmap mProfileBitmap;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -73,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private MainMvpPresenter mainMvpPresenter = new MainPresenter(MainActivity.this);
     private DialogDisplayLoadingProgress displayLoadingProgress;
-    private ProfileImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,14 +166,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setDataToList();
     }
 
-        @Override
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             onBackPressed();
         }
         return super.onKeyDown(keyCode, event);
@@ -213,13 +196,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-//    private void openGallery(Dialog dialog) {
-//        Intent intent = new Intent(Intent.ACTION_PICK,
-//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        startActivityForResult(intent, REQUEST_GALLERY_ACCESS);
-//        dialog.dismiss();
-//    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
@@ -232,25 +208,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(final int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY_ACCESS && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
-            profileImageView = new ProfileImageView(MainActivity.this, imageUri, "Upload");
-            profileImageView.onDisplayProfilePicture(new ProfileImageViewOnClickListener() {
-                @Override
-                public void onClickListener(String buttonTitle, Dialog dialog) {
-                    if (buttonTitle.equalsIgnoreCase("upload")){
-                        Toast.makeText(MainActivity.this, "Uploading...", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            Glide.with(MainActivity.this).load(imageUri).into(profileImage);
+            final Uri imageUri = data.getData();
+            mainMvpPresenter.onUploadProfile(MainActivity.this, imageUri, displayLoadingProgress);
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mProfileUri = null;
-            mProfileBitmap = imageBitmap;
-            Log.d("ProfileBitmap", String.valueOf(mProfileBitmap));
-            Log.d("ProfileUri", String.valueOf(mProfileUri));
-            profileImage.setImageBitmap(imageBitmap);
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), imageBitmap, "profile_picture", null);
+            mainMvpPresenter.onUploadProfile(MainActivity.this, Uri.parse(path), displayLoadingProgress);
         } else {
             Toast.makeText(MainActivity.this, "Nothing to do...", Toast.LENGTH_SHORT).show();
         }

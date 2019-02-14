@@ -11,12 +11,13 @@
     <android.support.v7.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35000002">
+        app:layout_constraintVertical_bias="0.25">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,6 +27,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
                 android:elevation="8dp"
                 android:fontFamily="@font/railway"
                 android:text="Personal Information"
@@ -38,6 +40,7 @@
                 android:id="@+id/imgProfileImage"
                 android:layout_width="144dp"
                 android:layout_height="155dp"
+                android:layout_marginStart="14dp"
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,14 +54,18 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Name: "
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/imgProfileImage"
                 app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:paddingEnd="5dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView2"
                 app:layout_constraintStart_toEndOf="@+id/textView2"
                 app:layout_constraintTop_toTopOf="@+id/textView2" />
@@ -70,15 +77,19 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Gender: "
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView2"
                 app:layout_constraintStart_toStartOf="@+id/textView2"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvGender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:paddingEnd="5dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView5"
                 app:layout_constraintStart_toEndOf="@+id/textView5"
                 app:layout_constraintTop_toTopOf="@+id/textView5" />
@@ -90,16 +101,20 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
                 android:text="Tel: "
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView5"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvTel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:paddingEnd="5dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
                 app:layout_constraintStart_toEndOf="@+id/textView7"
                 app:layout_constraintTop_toTopOf="@+id/textView7" />
@@ -111,16 +126,20 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Email:"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/textView7"
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="@+id/textView7"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:paddingEnd="5dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView9"
                 app:layout_constraintStart_toEndOf="@+id/textView9"
                 app:layout_constraintTop_toTopOf="@+id/textView9" />
@@ -131,17 +150,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Other:"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@id/textView9"
                 app:layout_constraintEnd_toStartOf="@+id/tvEmail"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView9"
                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvOther"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:enabled="false"
+                android:paddingEnd="5dp"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView13"
                 app:layout_constraintStart_toEndOf="@+id/textView13"
                 app:layout_constraintTop_toTopOf="@+id/textView13" />
@@ -159,23 +182,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imgProfileImage">
+
                 <Button
                     android:id="@+id/btnEditInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
+                    android:background="@color/fui_transparent"
                     android:text="Edit"
-                    android:elevation="8dp"
                     android:textAllCaps="false"
-                    android:background="@color/fui_transparent"/>
+                    android:textSize="14sp" />
+
                 <Button
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:text="Cancel"
                     android:layout_marginStart="5dp"
-                    android:elevation="8dp"
+                    android:background="@color/fui_transparent"
+                    android:text="Cancel"
                     android:textAllCaps="false"
-                    android:background="@color/fui_transparent"/>
+                    android:textSize="14sp" />
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

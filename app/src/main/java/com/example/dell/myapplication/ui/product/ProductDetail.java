@@ -1,6 +1,7 @@
 package com.example.dell.myapplication.ui.product;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -107,7 +108,12 @@ public class ProductDetail extends AppCompatActivity {
     }
 
     private void onSubmitClicked() {
-        new PushNotification(ProductDetail.this, mCompanyName, mProductName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            new PushNotification(ProductDetail.this, mCompanyName, mProductName);
+        } else {
+            Toast.makeText(ProductDetail.this, "Push notification function has been block" +
+                    "with this version...", Toast.LENGTH_SHORT).show();
+        }
         Toast.makeText(ProductDetail.this, "Submitted order...", Toast.LENGTH_SHORT).show();
     }
 
