@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +30,12 @@ import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
-import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.model.UserInfo;
+import com.example.dell.myapplication.ui.login.LoginActivity;
+import com.example.dell.myapplication.ui.sale_product.AddProductToStoreActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -41,7 +45,8 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+    MainMvpView{
     private MyAdapter myAdapter;
 
     private List<Product> mProductList = new ArrayList<>();
@@ -51,11 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CircleImageView profileImage;
     private TextView tvUserName;
 
+    private int backPress = 0;
+
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_CAMERA_PERMISSION = 2;
 
     private MainMvpPresenter mainMvpPresenter = new MainPresenter(MainActivity.this);
+    private MainMvpPresenter mainMvpPresenter1;
     private DialogDisplayLoadingProgress displayLoadingProgress;
 
     @Override
@@ -83,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(layoutManager);
 
         displayLoadingProgress = new DialogDisplayLoadingProgress(MainActivity.this);
+
+        mainMvpPresenter1 = new MainPresenter(MainActivity.this, this, displayLoadingProgress);
 
         myAdapter = new MyAdapter(this, mProductList, new MyAdapter.AddProductToCartListener() {
             @Override
@@ -168,15 +178,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onBackPressed();
-        }
-        return super.onKeyDown(keyCode, event);
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)){
+                drawerLayout.closeDrawer(GravityCompat.START);
+                backPress = 0;
+            } else if (backPress <1){
+                Toast.makeText(MainActivity.this, "Press back again to exit!", Toast.LENGTH_SHORT).show();
+                backPress++;
+            } else {
+                finish();
+            }
     }
 
     private void checkDeviceCamera(View view) {
@@ -251,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemID = menuItem.getItemId();
         switch (itemID) {
             case R.id.profile: {
-                mainMvpPresenter.onViewProfileClicked();
+                mainMvpPresenter1.onViewProfileClicked();
                 break;
             }
             case R.id.location_and_maps: {
@@ -262,8 +273,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "Navigation menu clicked Setting", Toast.LENGTH_SHORT).show();
                 break;
             }
-            case R.id.ordered_list: {
-                Toast.makeText(this, "Navigation menu clicked Ordered list", Toast.LENGTH_SHORT).show();
+            case R.id.sale_product: {
+                startActivity(new Intent(MainActivity.this, AddProductToStoreActivity.class));
                 break;
             }
             case R.id.sign_out: {
@@ -287,4 +298,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void onUpdateUserInfoSuccess(UserInfo userInfo, EditText etName, EditText etGender,
+                                        EditText etTel, EditText etOther, Button btnDone) {
+        mainMvpPresenter.onUpdateUserInfo(userInfo, displayLoadingProgress, etName, etGender, etTel,
+                etOther, btnDone);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        backPress = 0;
+    }
 }

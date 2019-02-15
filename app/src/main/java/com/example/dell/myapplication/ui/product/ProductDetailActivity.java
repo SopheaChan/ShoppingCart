@@ -17,7 +17,7 @@ import com.example.dell.myapplication.ui.map.MapsActivity;
 
 import java.util.Locale;
 
-public class ProductDetail extends AppCompatActivity {
+public class ProductDetailActivity extends AppCompatActivity {
 
     private int mProductImage;
     private String mProductName;
@@ -25,7 +25,6 @@ public class ProductDetail extends AppCompatActivity {
     private Double mProductPrice;
     private String mCompanyName;
     private String mTel;
-    private Double mAmount;
 
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -39,6 +38,8 @@ public class ProductDetail extends AppCompatActivity {
     private ImageView btnAddToCart;
     private ImageView btnRemoveFromCart;
     private Button btnSubmit;
+
+    private ProductDetailMvpPresenter productDetailMvpPresenter = new ProductDetailPresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class ProductDetail extends AppCompatActivity {
     }
 
     private void onFindLocation() {
-        Intent intent = new Intent(ProductDetail.this, MapsActivity.class);
+        Intent intent = new Intent(ProductDetailActivity.this, MapsActivity.class);
         intent.putExtra("companyName", mCompanyName);
         intent.putExtra("lat", 13.465109);
         intent.putExtra("lng", 106.602148);
@@ -109,25 +110,21 @@ public class ProductDetail extends AppCompatActivity {
 
     private void onSubmitClicked() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            new PushNotification(ProductDetail.this, mCompanyName, mProductName);
+            new PushNotification(ProductDetailActivity.this, mCompanyName, mProductName);
         } else {
-            Toast.makeText(ProductDetail.this, "Push notification function has been block" +
+            Toast.makeText(ProductDetailActivity.this, "Push notification function has been block" +
                     "with this version...", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(ProductDetail.this, "Submitted order...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ProductDetailActivity.this, "Submitted order...", Toast.LENGTH_SHORT).show();
     }
 
     private void onRemoveFromCartClicked() {
-        Toast.makeText(ProductDetail.this, "Removed from cart...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ProductDetailActivity.this, "Removed from cart...", Toast.LENGTH_SHORT).show();
     }
 
     private void onAddToCartClicked() {
-        mProductQuantity += Integer.parseInt(etOrderQuantity.getText().toString());
-        mAmount = mProductQuantity * mProductPrice;
-
-        tvOrderedProduct.setText(String.format(Locale.US, "%d", mProductQuantity));
-        tvTotalAmount.setText(String.format(Locale.US, "%.2f", mAmount));
-        etOrderQuantity.setText("");
+        productDetailMvpPresenter.onAddToCart(mProductQuantity, mProductPrice, tvOrderedProduct,
+                tvTotalAmount, etOrderQuantity);
     }
 
     private void setDataToView() {

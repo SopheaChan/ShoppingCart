@@ -15,12 +15,15 @@ import android.transition.Transition;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
+import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
@@ -57,11 +60,25 @@ public class MainPresenter implements MainMvpPresenter {
     private DatabaseReference mDatabaseRef;
     private Context context;
     private ProfileImageView profileImageView;
+    private MainMvpView mainMvpView;
+    private DialogDisplayLoadingProgress dialogDisplayLoadingProgress;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
 
-    public MainPresenter(Context context) {
+    public MainPresenter(Context context){
         this.context = context;
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mAuth.getCurrentUser();
+        String userID = mFirebaseUser.getUid();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("user").child(userID);
+    }
+
+    public MainPresenter(Context context, MainMvpView mainMvpView,
+                         DialogDisplayLoadingProgress loadingProgress) {
+        this.context = context;
+        this.mainMvpView = mainMvpView;
+        this.dialogDisplayLoadingProgress = loadingProgress;
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
         String userID = mFirebaseUser.getUid();
@@ -92,7 +109,8 @@ public class MainPresenter implements MainMvpPresenter {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
             if (userInfo != null) {
-                DisplayProfileInfo displayProfileInfo = new DisplayProfileInfo(context, userInfo);
+                DisplayProfileInfo displayProfileInfo =
+                        new DisplayProfileInfo(context, mainMvpView, dialogDisplayLoadingProgress, userInfo);
                 displayProfileInfo.viewUserInfo();
             }
         }
@@ -103,70 +121,44 @@ public class MainPresenter implements MainMvpPresenter {
         }
     };
 
-    /*@Override
-    public void onUpdateUserInfo(final UserInfo userInfo, final DialogDisplayLoadingProgress displayLoadingProgress) {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            final String userID = user.getUid();
-            StorageReference mStorageRef = FirebaseStorage.getInstance()
-                    .getReference("profile")
-                    .child(userID);
-            StorageTask storageTask = mStorageRef.putFile(Uri.parse(userInfo.getProfileUrl()))
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            FirebaseStorage.getInstance()
-                                    .getReference("profile")
-                                    .child(userID)
-                                    .getDownloadUrl()
-                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
-                                                saveUserInfoToDatabase(userInfo, displayLoadingProgress,
-                                                        context, userID, Objects.requireNonNull(task.getResult()).toString());
-                                            }
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+    @Override
+    public void onUpdateUserInfo(final UserInfo userInfo, final DialogDisplayLoadingProgress displayLoadingProgress,
+                                 final EditText etName, final EditText etGender,
+                                 final EditText etTel, final EditText etOther, final Button btnEditProfile) {
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mAuth.getCurrentUser();
+        assert mFirebaseUser != null;
+        String userID = mFirebaseUser.getUid();
+        try {
+
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference("user").child(userID);
+            mDatabaseRef.child("uEmail").setValue(userInfo.getuEmail());
+            mDatabaseRef.child("uName").setValue(userInfo.getuName());
+            mDatabaseRef.child("uTel").setValue(userInfo.getuTel());
+            mDatabaseRef.child("uGender").setValue(userInfo.getuGender());
+            mDatabaseRef.child("uOther").setValue(userInfo.getuOther());
+            mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    etName.setEnabled(false);
+                    etGender.setEnabled(false);
+                    etTel.setEnabled(false);
+                    etOther.setEnabled(false);
+                    btnEditProfile.setText("Edit");
+                    displayLoadingProgress.getDialog().dismiss();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    displayLoadingProgress.getDialog().dismiss();
+                    Toast.makeText(context, "Error updating user data...", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (Exception e){
+            Log.e("OnUpdatUserInfo: ", e.toString());
         }
     }
-
-    private void saveUserInfoToDatabase(UserInfo userInfo, final DialogDisplayLoadingProgress displayLoadingProgress,
-                                        final Context context, String userID, String profileUrl) {
-        userInfo.setProfileUrl(profileUrl);
-        if (userInfo.getuOther().isEmpty()) {
-            userInfo.setuOther("N/A");
-        }
-        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mDatabaseRef = mFirebaseDatabase.getReference().child("user");
-
-        mDatabaseRef.child(userID)
-                .setValue(userInfo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        displayLoadingProgress.getDialog().dismiss();
-                        context.startActivity(new Intent(context, MainActivity.class));
-                        ((Activity)context).finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        displayLoadingProgress.getDialog().dismiss();
-                        Snackbar.make(((Activity) context).findViewById(R.id.btnSignUp),
-                                e.toString(), Snackbar.LENGTH_SHORT).show();
-                    }
-                });
-    }*/
 
     @Override
     public void onLoadUserInfo(final Activity activity, final TextView tvUserName,

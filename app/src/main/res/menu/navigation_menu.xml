@@ -13,8 +13,8 @@
     </group>
     <item android:title="@string/sub_header">
         <menu>
-            <item android:title="@string/ordered_list"
-                android:id="@+id/ordered_list"/>
+            <item android:title="@string/sale_product"
+                android:id="@+id/sale_product"/>
             <item android:title="@string/sign_out"
                 android:id="@+id/sign_out"/>
         </menu>

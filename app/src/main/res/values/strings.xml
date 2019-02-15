@@ -19,9 +19,13 @@
     <string name="setting">Setting</string>
     <string name="location_and_maps">Location &amp; Maps</string>
     <string name="sub_header">Sub-header</string>
-    <string name="ordered_list">Ordered list</string>
+    <string name="sale_product">Add Product To Store</string>
     <string name="sign_out">Sign out</string>
     <string name="view_on_maps">view on maps</string>
     <string name="back"><![CDATA[<< Back]]></string>
     <string name="skip"><![CDATA[Skip >>]]></string>
+    <string name="company_name">Company Name</string>
+    <string name="telephone">Telephone</string>
+    <string name="email">Email</string>
+    <string name="next"><![CDATA[Next >>]]></string>
 </resources>

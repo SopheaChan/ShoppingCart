@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.UserInfo;
 import com.example.dell.myapplication.ui.main.MainMvpPresenter;
+import com.example.dell.myapplication.ui.main.MainMvpView;
 import com.example.dell.myapplication.ui.main.MainPresenter;
 
 import java.util.Objects;
@@ -28,15 +29,15 @@ import java.util.Objects;
 public class DisplayProfileInfo {
     private Context context;
     private UserInfo userInfo;
-    private MainMvpPresenter mainMvpPresenter;
+    private MainMvpView mainMvpView;
     private DialogDisplayLoadingProgress loadingProgress;
 
-    public DisplayProfileInfo(Context context, UserInfo userInfo){
-        this.context = context;
+    public DisplayProfileInfo(Context context, MainMvpView mainMvpView,
+                              DialogDisplayLoadingProgress displayLoadingProgress, UserInfo userInfo){
         this.userInfo = userInfo;
-        mainMvpPresenter = new MainPresenter(context);
-        loadingProgress = new DialogDisplayLoadingProgress(context);
-
+        this.context = context;
+        this.mainMvpView = mainMvpView;
+        this.loadingProgress = displayLoadingProgress;
     }
 
     public void viewUserInfo(){
@@ -78,21 +79,15 @@ public class DisplayProfileInfo {
                     tvTel.setEnabled(true);
                     tvOther.setEnabled(true);
                     btnEditProfile.setText("Save");
-                } else {
-//                    String name = tvName.getText().toString();
-//                    String gender = tvGender.getText().toString();
-//                    String tel = tvTel.getText().toString();
-//                    String email = tvEmail.getText().toString();
-//                    String otherContact = tvOther.getText().toString();
-//                    UserInfo userInfo1 = new UserInfo(userInfo.getProfileUrl(), name, gender, tel, email, otherContact);
-//                    mainMvpPresenter.onUpdateUserInfo(userInfo1, loadingProgress);
-
-                    tvName.setEnabled(false);
-                    tvGender.setEnabled(false);
-                    tvName.setEnabled(false);
-                    tvTel.setEnabled(false);
-                    tvOther.setEnabled(false);
-                    btnEditProfile.setText("Edit");
+                } else if (buttonTitle.equalsIgnoreCase("save")){
+                    loadingProgress.displayLoadingProgress("Updating...");
+                    String name = tvName.getText().toString();
+                    String gender = tvGender.getText().toString();
+                    String tel = tvTel.getText().toString();
+                    String email = tvEmail.getText().toString();
+                    String otherContact = tvOther.getText().toString();
+                    UserInfo userInfo1 = new UserInfo(userInfo.getProfileUrl(), name, gender, tel, email, otherContact);
+                    mainMvpView.onUpdateUserInfoSuccess(userInfo1, tvName, tvGender, tvTel, tvOther, btnEditProfile);
                 }
             }
         });

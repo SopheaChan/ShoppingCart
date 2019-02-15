@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
@@ -23,5 +25,7 @@ public interface MainMvpPresenter {
     void onOpenGallery(Activity activity, Dialog dialog);
     void onViewProfileImage();
     void onUploadProfile(Context context, Uri imageUri, DialogDisplayLoadingProgress displayLoadingProgress);
-//    void onUpdateUserInfo(UserInfo userInfo, DialogDisplayLoadingProgress displayLoadingProgress);
+    void onUpdateUserInfo(UserInfo userInfo, DialogDisplayLoadingProgress displayLoadingProgress,
+                          EditText etName, EditText etGender,
+                          EditText etTel, EditText etOther, Button btnDone);
 }

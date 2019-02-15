@@ -19,6 +19,7 @@ public class DialogMenu implements View.OnClickListener{
     private static final int GALLERY = 1;
     private static final int CAMERA = 2;
     private static final int VIEW_PROFILE_PICTURE = 3;
+
     public  DialogMenu(Context context, OnDialogClickListener callback){
         this.context = context;
         this.callback = callback;
@@ -61,5 +62,9 @@ public class DialogMenu implements View.OnClickListener{
                 break;
             }
         }
+    }
+
+    public Dialog getDialog(){
+        return this.dialog;
     }
 }

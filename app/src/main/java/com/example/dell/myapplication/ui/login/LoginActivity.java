@@ -1,24 +1,19 @@
 package com.example.dell.myapplication.ui.login;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.transition.Explode;
-import android.transition.Fade;
 import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.dell.myapplication.custom.DialogChooseImageForSignUp;
-import com.example.dell.myapplication.ui.main.MainActivity;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
+import com.example.dell.myapplication.ui.main.MainActivity;
 import com.example.dell.myapplication.ui.sign_up.SignUpActivity;
 import com.google.firebase.FirebaseApp;
 
@@ -27,11 +22,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Button btnLogin;
     private TextView btnSignUp;
-    private TextInputLayout etEmail;
-    private TextInputLayout etPassword;
+    private EditText etEmail;
+    private EditText etPassword;
 
     private LoginMvpPresenter mLoginMvpPresenter = new LoginPresenter(this);
     private DialogDisplayLoadingProgress mDisplayLoadingProgress;
+
+    private int backpress = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +56,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int buttonID = v.getId();
         switch (buttonID) {
             case R.id.btnLogin: {
-                String email = etEmail.getEditText().getText().toString();
-                String password = etPassword.getEditText().getText().toString();
+                String email = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
                 if (password.length()<6 || !(Patterns.EMAIL_ADDRESS.matcher(email).matches())){
                     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                         etEmail.setError("invalid email");
@@ -94,5 +91,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLoginFailed() {
         mDisplayLoadingProgress.getDialog().dismiss();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backpress<1){
+            Toast.makeText(LoginActivity.this, "Press back again to exit!", Toast.LENGTH_SHORT).show();
+        } else {
+            finish();
+        }
+        backpress++;
     }
 }

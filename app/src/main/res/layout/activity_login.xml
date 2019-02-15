@@ -36,60 +36,46 @@
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_marginStart="18dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="18dp"
         android:background="@drawable/login_input_text_shape"
         android:elevation="8dp"
-        android:gravity="center"
-        android:paddingStart="10dp"
+        android:fontFamily="@font/railway"
+        android:hint="Email"
+        android:paddingStart="16dp"
         android:paddingEnd="10dp"
+        android:textSize="16sp"
+        android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toTopOf="@id/guideline"
-        app:hintTextAppearance="@style/InputTextLayoutHintText">
+        app:layout_constraintTop_toTopOf="@id/guideline" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/railway"
-            android:hint="Email"
-            android:textSize="16sp" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_marginTop="18dp"
         android:background="@drawable/login_input_text_shape"
         android:elevation="8dp"
-        android:gravity="center"
-        android:paddingStart="10dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingStart="16dp"
         android:paddingEnd="10dp"
+        android:textSize="16sp"
+        android:singleLine="true"
         app:layout_constraintEnd_toEndOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="@id/etEmail"
-        app:layout_constraintTop_toBottomOf="@id/etEmail"
-        app:passwordToggleEnabled="true"
-        app:hintTextAppearance="@style/InputTextLayoutHintText">
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/railway"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:textSize="16sp" />
-    </android.support.design.widget.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@id/etEmail" />
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/login_button_shape"
         android:elevation="8dp"
@@ -107,7 +93,7 @@
         android:fontFamily="@font/railway"
         android:text="No account?"
         android:textColor="@color/colorLightBlue"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -119,7 +105,7 @@
         android:layout_marginStart="8dp"
         android:text="Sign up."
         android:textColor="@color/colorLightBlue"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/tvSignUpLabel"
         app:layout_constraintStart_toEndOf="@id/tvSignUpLabel"
         app:layout_constraintTop_toTopOf="@id/tvSignUpLabel" />
