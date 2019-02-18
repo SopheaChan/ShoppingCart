@@ -49,7 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         final Product product = productList.get(position);
         final CompanyInfo companyInfo = product.getCompanyInfo();
 
-        viewHolder.productName.setText(product.getProName());
+        viewHolder.productName.setText(product.getProTitle());
         viewHolder.productPrice.setText(String.format(Locale.US, "%.2f", product.getProPrice()));
         viewHolder.productQuantity.setText(String.format(Locale.US, "%d", product.getProQuantity()));
         Glide.with(context)
@@ -73,7 +73,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductDetailActivity.class);
                 intent.putExtra("proImage", product.getProImage());
-                intent.putExtra("proName", product.getProName());
+                intent.putExtra("proName", product.getProTitle());
                 intent.putExtra("proPrice", product.getProPrice());
                 intent.putExtra("proQuantity", product.getProQuantity());
                 intent.putExtra("companyName", companyInfo.getCompanyName());

@@ -10,7 +10,7 @@ public class UserInfo {
     private String uEmail;
     private String uOther;
 
-    public  UserInfo(){};
+    public  UserInfo(){}
     public UserInfo(String profileUrl, String uName, String uGender, String uTel, String uEmail, String uOther) {
         this.profileUrl = profileUrl;
         this.uName = uName;

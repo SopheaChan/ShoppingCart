@@ -25,7 +25,7 @@
         android:roundIcon="@drawable/ic_add_shopping_cart_blue_24dp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.sale_product.AddProductToStoreActivity"></activity>
+        <activity android:name=".ui.sale_product.AddProductToStoreActivity"/>
         <activity android:name=".ui.sign_up.SignUpActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

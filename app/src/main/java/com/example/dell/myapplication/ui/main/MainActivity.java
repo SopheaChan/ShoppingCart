@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +33,6 @@ import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.UserInfo;
-import com.example.dell.myapplication.ui.login.LoginActivity;
 import com.example.dell.myapplication.ui.sale_product.AddProductToStoreActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -102,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     productQuantity++;
                     mProduct.setProQuantity(productQuantity);
                     proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
-                    Toast.makeText(getApplicationContext(), "Added " + mProduct.getProName()
+                    Toast.makeText(getApplicationContext(), "Added " + mProduct.getProTitle()
                             + " to cart!" + "\n" + "Current order: " + mProduct.getProQuantity()
                             + "\n" + "Amount: " + Double.toString(
                             mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     productQuantity--;
                     mProduct.setProQuantity(productQuantity);
                     proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
-                    Toast.makeText(getApplicationContext(), "Removed " + mProduct.getProName() + " from cart!" +
+                    Toast.makeText(getApplicationContext(), "Removed " + mProduct.getProTitle() + " from cart!" +
                             "\n" + "Order remained: " + mProduct.getProQuantity()
                             + "\n" + "Amount: " + Double.toString(
                             mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();

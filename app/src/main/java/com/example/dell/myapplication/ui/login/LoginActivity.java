@@ -2,7 +2,6 @@ package com.example.dell.myapplication.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
@@ -28,7 +27,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LoginMvpPresenter mLoginMvpPresenter = new LoginPresenter(this);
     private DialogDisplayLoadingProgress mDisplayLoadingProgress;
 
-    private int backpress = 0;
+    private int backPress = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +94,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
-        if (backpress<1){
+        if (backPress <1){
             Toast.makeText(LoginActivity.this, "Press back again to exit!", Toast.LENGTH_SHORT).show();
         } else {
             finish();
         }
-        backpress++;
+        backPress++;
     }
 }

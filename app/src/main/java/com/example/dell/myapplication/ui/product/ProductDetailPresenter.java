@@ -10,12 +10,15 @@ public class ProductDetailPresenter implements ProductDetailMvpPresenter{
     @Override
     public void onAddToCart(int proQuantity, double proPrice, TextView tvOrderedProduct,
                             TextView tvTotalAmount, EditText etOrderedQuantity) {
-        proQuantity += Integer.parseInt(etOrderedQuantity.getText().toString());
-        double mAmount = proQuantity * proPrice;
+        String orderQuantity = etOrderedQuantity.getText().toString();
+        if (!orderQuantity.isEmpty()) {
+            proQuantity += Integer.parseInt(etOrderedQuantity.getText().toString());
+            double mAmount = proQuantity * proPrice;
 
-        tvOrderedProduct.setText(String.format(Locale.US, "%d", proQuantity));
-        tvTotalAmount.setText(String.format(Locale.US, "%.2f", mAmount));
-        etOrderedQuantity.setText("");
+            tvOrderedProduct.setText(String.format(Locale.US, "%d", proQuantity));
+            tvTotalAmount.setText(String.format(Locale.US, "%.2f", mAmount));
+            etOrderedQuantity.setText("");
+        }
     }
 
     @Override

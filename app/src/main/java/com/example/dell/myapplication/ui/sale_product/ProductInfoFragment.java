@@ -1,109 +1,152 @@
 package com.example.dell.myapplication.ui.sale_product;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
+import com.example.dell.myapplication.custom.DialogMenu;
+import com.example.dell.myapplication.listener.Interactor;
+import com.example.dell.myapplication.listener.OnDialogClickListener;
+import com.example.dell.myapplication.model.CompanyInfo;
+import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.model.ProductData;
+import com.example.dell.myapplication.ui.main.MainActivity;
+import com.example.dell.myapplication.ui.main.MainMvpPresenter;
+import com.example.dell.myapplication.ui.main.MainPresenter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProductInfoFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProductInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProductInfoFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import javax.xml.transform.Result;
 
-    private OnFragmentInteractionListener mListener;
+import static android.app.Activity.RESULT_OK;
 
-    public ProductInfoFragment() {
-        // Required empty public constructor
-    }
+public class ProductInfoFragment extends Fragment implements View.OnClickListener {
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProductInfoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProductInfoFragment newInstance(String param1, String param2) {
-        ProductInfoFragment fragment = new ProductInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ImageView imgProductImage;
+    private EditText etProductTitle;
+    private EditText etProductPrice;
+    private EditText etProductQuantity;
+    private EditText etProductDescription;
+    private Button btnBack;
+    private Button btnSubmit;
+    private Context context;
+    private static final int REQUEST_IMAGE_FROM_GALLERY = 0;
+    private static final int CAPTURE_IMAGE = 1;
+    private String path = "";
+    private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter =
+            new AddProductToStorePresenter();
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private String comName = "";
+    private String comTel = "";
+    private String comEmail = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product_info, container, false);
-    }
+        this.context = container.getContext();
+        View view = inflater.inflate(R.layout.fragment_product_info, container, false);
+        btnBack = view.findViewById(R.id.btnBack);
+        btnSubmit = view.findViewById(R.id.btnSubmitData);
+        imgProductImage = view.findViewById(R.id.imgProductImage1);
+        etProductTitle = view.findViewById(R.id.etProductTitle);
+        etProductPrice = view.findViewById(R.id.etProductPrice);
+        etProductQuantity = view.findViewById(R.id.etProductQuantity);
+        etProductDescription = view.findViewById(R.id.etProductDescription);
+        btnBack.setOnClickListener(this);
+        imgProductImage.setOnClickListener(this);
+        btnSubmit.setOnClickListener(this);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        Bundle bundle = this.getArguments();
+        if (bundle != null){
+            comName = bundle.getString("comName");
+            comTel = bundle.getString("comTel");
+            comEmail = bundle.getString("comEmail");
         }
+        return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnBack: {
+                Objects.requireNonNull(getActivity()).onBackPressed();
+                break;
+            }
+            case R.id.imgProductImage1: {
+                new DialogMenu(getContext(), onDialogClick);
+                break;
+            }
+            case R.id.btnSubmitData: {
+                String proTitle = etProductTitle.getText().toString().trim();
+                String proPrice = etProductPrice.getText().toString().trim();
+                String proQuantity = etProductQuantity.getText().toString().trim();
+                String proDescription = etProductDescription.getText().toString().trim();
+                CompanyInfo companyInfo = new CompanyInfo(comName, comTel, comEmail);
+                ProductData productData = new ProductData(path, proTitle, proPrice,
+                        proQuantity, proDescription);
+                addProductToStoreMvpPresenter.onButtonSubmitListener(context, productData, companyInfo);
+                break;
+            }
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+    private OnDialogClickListener onDialogClick = new OnDialogClickListener() {
+        @Override
+        public void onItemClickListener(int result, View view, Dialog dialog) {
+            switch (result) {
+                case 1: {
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, REQUEST_IMAGE_FROM_GALLERY);
+                    break;
+                }
+                case 2: {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+                        startActivityForResult(takePictureIntent, CAPTURE_IMAGE);
+                        break;
+                    }
+                }
+                default:
+                    break;
+            }
+        }
+    };
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_FROM_GALLERY && resultCode == RESULT_OK) {
+            Uri imageUri = data.getData();
+            Glide.with(context).load(imageUri).into(imgProductImage);
+            path = imageUri.toString();
+        } else if (requestCode == CAPTURE_IMAGE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+            path = MediaStore.Images.Media.insertImage(context.getContentResolver(), imageBitmap, "profile_picture", null);
+            imgProductImage.setImageBitmap(imageBitmap);
+        }
     }
 }

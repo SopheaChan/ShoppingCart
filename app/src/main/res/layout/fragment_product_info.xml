@@ -1,15 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     tools:context=".ui.sale_product.ProductInfoFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-</FrameLayout>
+
+        <ImageView
+            android:id="@+id/imgProductImage1"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="2dp"
+            android:elevation="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_image_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etProductTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:hint="Product title/name"
+            android:inputType="textPersonName"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@+id/imgProductImage1"
+            app:layout_constraintStart_toStartOf="@+id/imgProductImage1"
+            app:layout_constraintTop_toBottomOf="@+id/imgProductImage1" />
+
+        <EditText
+            android:id="@+id/etProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:hint="Unit price"
+            android:inputType="number"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@+id/etProductTitle"
+            app:layout_constraintStart_toStartOf="@+id/etProductTitle"
+            app:layout_constraintTop_toBottomOf="@+id/etProductTitle" />
+
+        <EditText
+            android:id="@+id/etProductQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:hint="Product quantity"
+            android:inputType="number"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="@+id/etProductPrice"
+            app:layout_constraintStart_toStartOf="@+id/etProductPrice"
+            app:layout_constraintTop_toBottomOf="@+id/etProductPrice" />
+
+        <EditText
+            android:id="@+id/etProductDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:ems="10"
+            android:hint="@string/product_description"
+            android:inputType=""
+            android:lines="3"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/etProductQuantity"
+            app:layout_constraintStart_toStartOf="@+id/etProductQuantity"
+            app:layout_constraintTop_toBottomOf="@+id/etProductQuantity" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/etProductDescription"
+            app:layout_constraintEnd_toEndOf="@id/etProductDescription"
+            app:layout_constraintTop_toBottomOf="@id/etProductDescription"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
+                android:text="@string/back"
+                android:textSize="14sp"
+                android:layout_marginStart="32dp"
+                android:layout_alignParentStart="true"/>
+            <Button
+                android:id="@+id/btnSubmitData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
+                android:text="@string/submit"
+                android:textSize="14sp"
+                android:layout_marginEnd="32dp"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

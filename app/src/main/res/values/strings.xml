@@ -28,4 +28,6 @@
     <string name="telephone">Telephone</string>
     <string name="email">Email</string>
     <string name="next"><![CDATA[Next >>]]></string>
+    <string name="submit"><![CDATA[Submit >>]]></string>
+    <string name="product_description">Description(Optional)</string>
 </resources>
