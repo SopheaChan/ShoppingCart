@@ -162,12 +162,18 @@ public class SignUpPresenter implements SignUpMvpPresenter {
 
         mDatabaseRef.child(userID)
                 .setValue(userInfo)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        displayLoadingProgress.getDialog().dismiss();
-                        context.startActivity(new Intent(context, MainActivity.class));
-                        ((Activity)context).finish();
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            displayLoadingProgress.getDialog().dismiss();
+                            context.startActivity(new Intent(context, MainActivity.class));
+                            ((Activity)context).finish();
+                        } else {
+                            displayLoadingProgress.getDialog().dismiss();
+                            Snackbar.make(((Activity) context).findViewById(R.id.btnSignUp),
+                                    "Fail to sign up user...", Snackbar.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

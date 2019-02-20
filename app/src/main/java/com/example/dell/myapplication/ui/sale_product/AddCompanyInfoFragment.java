@@ -21,6 +21,7 @@ public class AddCompanyInfoFragment extends Fragment implements View.OnClickList
     private Button btnNext;
     private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter =
             new AddProductToStorePresenter();
+    private AddProductToStorePresenter addProductToStorePresenter1;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,9 +30,14 @@ public class AddCompanyInfoFragment extends Fragment implements View.OnClickList
         etCompanyName = view.findViewById(R.id.etCompanyName);
         etCompanyTel = view.findViewById(R.id.etTelephone);
         etCompanyEmail = view.findViewById(R.id.etEmail);
-
         btnNext.setOnClickListener(this);
+        loadUserData();
         return view;
+    }
+
+    private void loadUserData() {
+        addProductToStorePresenter1 = new AddProductToStorePresenter(etCompanyName, etCompanyTel, etCompanyEmail);
+        addProductToStorePresenter1.loadUserData();
     }
 
     @Override
@@ -50,8 +56,7 @@ public class AddCompanyInfoFragment extends Fragment implements View.OnClickList
         companyTel = etCompanyTel.getText().toString();
         companyEmail = etCompanyEmail.getText().toString();
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
         addProductToStoreMvpPresenter.setButtonNextListener(companyName, companyTel, companyEmail,
-                etCompanyName, etCompanyTel, etCompanyEmail, getContext(), fragmentManager);
+                    etCompanyName, etCompanyTel, etCompanyEmail, getContext(), fragmentManager);
     }
 }

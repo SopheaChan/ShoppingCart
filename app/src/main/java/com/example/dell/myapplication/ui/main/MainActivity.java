@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,8 +31,8 @@ import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
-import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.model.UserInfo;
 import com.example.dell.myapplication.ui.sale_product.AddProductToStoreActivity;
 
@@ -42,12 +43,13 @@ import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     MainMvpView{
     private MyAdapter myAdapter;
 
-    private List<Product> mProductList = new ArrayList<>();
+    private List<ProductData> mProductList = new ArrayList<>();
 
     private TextView tvTotalPrice;
 
@@ -89,21 +91,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setLayoutManager(layoutManager);
 
         displayLoadingProgress = new DialogDisplayLoadingProgress(MainActivity.this);
+        displayLoadingProgress.displayLoadingProgress("Loading...");
 
         mainMvpPresenter1 = new MainPresenter(MainActivity.this, this, displayLoadingProgress);
 
         myAdapter = new MyAdapter(this, mProductList, new MyAdapter.AddProductToCartListener() {
             @Override
-            public void onClick(Product mProduct, TextView proQuantity) {
-                int productQuantity = mProduct.getProQuantity();
-                if (productQuantity < 20) {
+            public void onClick(ProductData mProduct, TextView proQuantity) {
+                int productQuantity = Integer.parseInt(proQuantity.getText().toString());
+                if (productQuantity < Integer.parseInt(mProduct.getProductQuantity())) {
                     productQuantity++;
-                    mProduct.setProQuantity(productQuantity);
+//                    mProduct.setProductQuantity(Integer.toString(productQuantity));
                     proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
-                    Toast.makeText(getApplicationContext(), "Added " + mProduct.getProTitle()
-                            + " to cart!" + "\n" + "Current order: " + mProduct.getProQuantity()
-                            + "\n" + "Amount: " + Double.toString(
-                            mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(proQuantity, "Added " + mProduct.getProductTitle()
+                            + " to cart!" + "\n" + "Current order: " + productQuantity
+                            + "     " + "Amount: " + Double.toString(
+                            Double.parseDouble(mProduct.getProductPrice().replace('$', ' '))
+                                    * productQuantity), Snackbar.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "You cannot make an order for 20 burgers a time.", Toast.LENGTH_SHORT).show();
@@ -111,16 +115,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }, new MyAdapter.DeleteProductFromCartListener() {
             @Override
-            public void onClick(Product mProduct, TextView proQuantity) {
-                int productQuantity = mProduct.getProQuantity();
+            public void onClick(ProductData mProduct, TextView proQuantity) {
+                int productQuantity = Integer.parseInt(proQuantity.getText().toString());
                 if (productQuantity > 0) {
                     productQuantity--;
-                    mProduct.setProQuantity(productQuantity);
+                    mProduct.setProductQuantity(Integer.toString(productQuantity));
                     proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
-                    Toast.makeText(getApplicationContext(), "Removed " + mProduct.getProTitle() + " from cart!" +
-                            "\n" + "Order remained: " + mProduct.getProQuantity()
-                            + "\n" + "Amount: " + Double.toString(
-                            mProduct.getProPrice() * productQuantity), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(proQuantity, "Removed " + mProduct.getProductTitle() + " from cart!" +
+                            "\n" + "Order remained: " + productQuantity
+                            + "     " + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProductPrice().replace('$', ' '))
+                            * productQuantity), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -234,25 +238,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setDataToList() {
         mainMvpPresenter.onLoadUserInfo(MainActivity.this, tvUserName, profileImage);
-        CompanyInfo companyInfo1 = new CompanyInfo("Dream Farm", "+855 16 552 693", "dreamfarm@gmail.com");
-        Product product1 = new Product(R.drawable.black_burger, "Black Burger", 5.6, 0, companyInfo1);
-        CompanyInfo companyInfo2 = new CompanyInfo("SR Healthy Farm", "+855 16 622 666", "srhealthyfarm@gmail.com");
-        Product product2 = new Product(R.drawable.fresh_milk1, "Fresh Milk", 7.8, 0, companyInfo2);
-        CompanyInfo companyInfo3 = new CompanyInfo("Eco-famFarm", "+855 12 222 999", "eco-famfarm@gmail.com");
-        Product product3 = new Product(R.drawable.fresh_pork, "Fresh Pork", 4.00, 0, companyInfo3);
-//        CompanyInfo companyInfo4 = new CompanyInfo("Cambo-Farm", "+855 23 777 722", "cambo-farm@gmail.com");
-//        Product product4 = new Product(R.drawable.giant_lobster, "Khmer Giant Lobster", 6.2, 0, companyInfo4);
-        CompanyInfo companyInfo5 = new CompanyInfo("HC Community Farm", "+855 23 556 666", "hccommunityfarm@gmail.com");
-        Product product5 = new Product(R.drawable.khmer_chicken, "Khmer Chicken", 3.1, 0, companyInfo5);
-        CompanyInfo companyInfo6 = new CompanyInfo("Cambo Natural Farm", "+855 23 444 422", "cambonaturalfarm@gmail.com");
-        Product product6 = new Product(R.drawable.khmer_banana, "Banana", 9.01, 0, companyInfo6);
-        mProductList.add(product1);
-        mProductList.add(product2);
-        mProductList.add(product3);
-//        mProductList.add(product4);
-        mProductList.add(product5);
-        mProductList.add(product6);
-        myAdapter.notifyDataSetChanged();
+        mainMvpPresenter.setDataToList(myAdapter, mProductList, displayLoadingProgress);
     }
 
     @Override

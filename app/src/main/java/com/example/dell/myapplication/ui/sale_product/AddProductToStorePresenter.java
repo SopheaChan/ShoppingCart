@@ -17,16 +17,23 @@ import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.ProductData;
+import com.example.dell.myapplication.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+
+import timber.log.Timber;
 
 public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter {
     private CompanyInfo companyInfo;
@@ -35,6 +42,17 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
     private DatabaseReference databaseReference;
     private DialogDisplayLoadingProgress displayLoadingProgress;
     private StorageReference storageReference;
+    private EditText etSaler;
+    private EditText etTel;
+    private EditText etEmail;
+
+    public AddProductToStorePresenter(){}
+
+    public AddProductToStorePresenter(EditText etSaler, EditText etTel, EditText etEmail){
+        this.etSaler = etSaler;
+        this.etTel = etTel;
+        this.etEmail = etEmail;
+    }
 
     @Override
     public void setButtonNextListener(final String comName, final String comTel, final String comEmail,
@@ -52,40 +70,29 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
                 etComEmail.setError("invalid email address");
             }
         } else {
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-            String userID = firebaseUser.getUid();
-            companyInfo = new CompanyInfo(comName, comTel, comEmail);
-            firebaseDatabase = FirebaseDatabase.getInstance();
-            databaseReference = firebaseDatabase.getReference();
-            databaseReference.child("company").child(userID).child(comName).setValue(companyInfo)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("comName", comName);
-                                bundle.putString("comTel", comTel);
-                                bundle.putString("comEmail", comEmail);
-                                Fragment fragment = new ProductInfoFragment();
-                                fragment.setArguments(bundle);
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.fragment_frame, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
-                            } else {
-                                Toast.makeText(context, "Fail to save data...", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            Bundle bundle = new Bundle();
+            bundle.putString("comName", comName);
+            bundle.putString("comTel", comTel);
+            bundle.putString("comEmail", comEmail);
+            Fragment fragment = new ProductInfoFragment();
+            fragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_frame, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
     }
 
     @Override
-    public void onButtonSubmitListener(final Context context, final ProductData productData, final CompanyInfo companyInfo) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("product");
-        storageReference.child(companyInfo.getCompanyName()).child(productData.getProductTitle());
-        StorageTask storageTask = storageReference.putFile(Uri.parse(productData.getProductImage()))
+    public void onButtonSubmitListener(final Context context, final ProductData productData,
+                                       final CompanyInfo companyInfo, final DialogDisplayLoadingProgress displayLoadingProgress) {
+        Uri imageUri = Uri.parse(productData.getProductImage());
+        String companyName = companyInfo.getCompanyName();
+        String productTitle = productData.getProductTitle();
+
+        storageReference = FirebaseStorage.getInstance().getReference("product")
+                .child(companyName).child(productTitle);
+        StorageTask storageTask = storageReference.putFile(imageUri)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -98,51 +105,74 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
                                             if (task.isSuccessful()) {
                                                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                                                 final String userID = firebaseUser.getUid();
-                                                final String proID = databaseReference.push().getKey();
                                                 productData.setProductImage(task.getResult().toString());
-                                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                                        .getReference("company");
-                                                databaseReference.child(userID)
-                                                        .child(companyInfo.getCompanyName())
-                                                .child("product").child(proID);
-                                                databaseReference.setValue(productData)
+                                                final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                        .getReference("product");
+                                                String productID = databaseReference.push().getKey();
+                                                productData.setProductID(productID);
+                                                FirebaseDatabase.getInstance().getReference("product")
+                                                        .child(productID)
+                                                        .setValue(productData)
                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
-                                                                Toast.makeText(context, "Successfully saved data...", Toast.LENGTH_LONG).show();
+                                                                if (task.isSuccessful()) {
+                                                                    Toast.makeText(context, "Successfully saved data...", Toast.LENGTH_LONG).show();
+                                                                    displayLoadingProgress.getDialog().dismiss();
+                                                                } else {
+                                                                    displayLoadingProgress.getDialog().dismiss();
+                                                                }
                                                             }
                                                         });
+                                            } else {
+                                                displayLoadingProgress.getDialog().dismiss();
+                                                Toast.makeText(context, "There is a problem while saving data to database..."
+                                                        , Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
 
+                        } else {
+                            displayLoadingProgress.getDialog().dismiss();
+                            Toast.makeText(context, "Process failed...", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        displayLoadingProgress.getDialog().dismiss();
+                        Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
     @Override
-    public void uploadProductPicture(Uri imageUri, final String comName, final String proName) {
-        storageReference = FirebaseStorage.getInstance().getReference("product")
-                .child(comName).child(proName);
-        StorageTask storageTask = storageReference.putFile(imageUri)
-                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseStorage.getInstance().getReference("product")
-                                    .child(comName).child(proName).getDownloadUrl()
-                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
+    public void loadUserData() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        String userID = firebaseUser.getUid();
 
-                                            }
-                                        }
-                                    });
-
-                        }
-                    }
-                });
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference("user")
+                .child(userID)
+                .addListenerForSingleValueEvent(valueEventListener);
     }
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
+            if (userInfo != null){
+                etSaler.setText(userInfo.getuName());
+                etTel.setText(userInfo.getuTel());
+                etEmail.setText(userInfo.getuEmail());
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
 }

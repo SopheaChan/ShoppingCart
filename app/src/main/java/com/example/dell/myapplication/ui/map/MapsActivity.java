@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.dell.myapplication.R;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,10 +41,14 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -57,6 +63,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng mCurrentLocation;
     private static int mMapType = GoogleMap.MAP_TYPE_NONE;
     private static final int REQUEST_LOCATION = 123;
+
+    private String[] points = {
+            "sgneAsoe_S@lA?H?B@@?@@@@?@@B?@?D?TCTC",
+            "qeneAwle_SBHDFNP",
+            "wdneAske_SsA~Ai@f@QFi@La@Ni@LaANI@M?s@BW?g@?Y?QAE?MCMCAA]MIEUKOEMAKAYAIAG?IE_@Q",
+            "y{neAsge_Sz@eBDKRc@d@qABSDW@W?_@Ae@",
+            "swneAese_SK@?l@Cd@ARERGRINEJc@hAEHy@hBw@rAQVy@hAGFc@`@s@l@qBpAmBx@wAn@SH{@\\G@ODA?{ANgCReAFM@SBo@Ds@Do@@O?WAYCs@O_@Kg@I}Cq@SEOGYMa@QIECAGCGASK{@g@e@Ya@W{@i@IECAIIWSMMGG[Y]_@IG}@}@AC_@_@CEm@m@q@o@cAaAIICAAAEAEAC?GAI?G@E@GBOD}@X_A^{@XA?EBqBv@u@ZMFIDg@RkCfA{@\\o@TEB]Li@L",
+            "u{qeAk`e_SS@]BsBLWBqAFiENcCHeBHu@Bs@DeCPE?EFM@mDHoGLmMRwIRgCFiFJmDFeCDuDH",
+            "c|teAuyd_SDlH?vDLfFBpBBz@Dp@",
+            "a{teAg|c_SeD|@e@LUFM@YBQ@uABgCFiCDcCHcCBiBH_@@eDJc@@c@@E?oAB}ADe@@mEHu@?gBB",
+            "kuveAuvc_SAMM?}@Dm@BU?UAgHw@{Ei@s@IgKqAIAMCGAiEg@yBUc@G_BQy@KqE}AaDkAg@Qi@S",
+            "sgneAsoe_SB|ADD`@CTCHPNPsA~Ai@f@QFkA\\i@LaANW@kAByAA[G_@Oo@W}@GQE_@Qz@eBXo@d@qABSFo@AeAK@?l@Cd@Gf@Qb@i@tA_ArBiAjBaApAwAnAqBpAmBx@kBx@cA^QDcFb@wCRcBFg@AmASgAUqDw@i@Uw@][MaBaAkBiAw@s@aC_CsAwAcC}BQEQAMBuCbAuDtAuB|@}F~BgAZq@DkCP{GVsI\\kCPEFM@}LVmMRwIRqJRsHLuDHDlH?vDLfFFlDDp@eD|@{@Tg@DyJRgGLiCJmFNyEJcGHgBBAMkADcABmQmBgLyAgMwAy@KqE}AiE}Ai@S`@mALUNKTIH?"
+    };
 
     private FloatingActionButton btnDirection;
     private android.support.v7.widget.SearchView svSearchNearbyPlace;
@@ -229,10 +248,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.setMapType(mMapType);
 
+        CameraUpdate camera = CameraUpdateFactory.newLatLng(new LatLng(11.546982, 104.890985));
+        mMap.animateCamera(camera);
+
         if (checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
             LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
+
+        for(String points : points){
+            List<LatLng> steps = PolyUtil.decode(points);
+            mMap.addPolyline( new PolylineOptions().addAll(steps));
         }
 
         getCompanyLocation();

@@ -22,12 +22,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
+import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
 import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.model.UserInfo;
 import com.example.dell.myapplication.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +50,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -181,12 +184,13 @@ public class MainPresenter implements MainMvpPresenter {
     }
 
     @Override
-    public void onCheckOutClickedListener(List<Product> productList, TextView tvTotalPrice) {
+    public void onCheckOutClickedListener(List<ProductData> productList, TextView tvTotalPrice) {
         double totalAmount = 0.0;
         String dollarSymbol = "$";
         for (int i = 0; i < productList.size(); i++) {
-            Product product = productList.get(i);
-            totalAmount += product.getProPrice() * product.getProQuantity();
+            ProductData product = productList.get(i);
+            totalAmount += Double.parseDouble(product.getProductPrice().replace('$', ' '))
+                    * Integer.parseInt(product.getProductQuantity());
         }
         //Split the number after the dot of total amount, only two characters will be taken
         tvTotalPrice.setText(String.format(Locale.US, dollarSymbol + "%.2f", totalAmount));
@@ -265,5 +269,32 @@ public class MainPresenter implements MainMvpPresenter {
                 }
             }
         });
+    }
+
+    @Override
+    public void setDataToList(final MyAdapter myAdapter, final List<ProductData> mProductList,
+                              final DialogDisplayLoadingProgress displayLoadingProgress) {
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userID = mFirebaseUser.getUid();
+
+        mDatabaseRef = FirebaseDatabase.getInstance()
+                .getReference("product");
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mProductList.clear();
+                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                            ProductData productData = dataSnapshot1.getValue(ProductData.class);
+                            mProductList.add(productData);
+                            displayLoadingProgress.getDialog().dismiss();
+                        }
+                        myAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                            displayLoadingProgress.getDialog().dismiss();
+                    }
+                });
     }
 }

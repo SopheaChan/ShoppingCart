@@ -1,6 +1,5 @@
 package com.example.dell.myapplication.ui.sale_product;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,34 +7,27 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
+import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
-import com.example.dell.myapplication.listener.Interactor;
 import com.example.dell.myapplication.listener.OnDialogClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
-import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.ProductData;
-import com.example.dell.myapplication.ui.main.MainActivity;
-import com.example.dell.myapplication.ui.main.MainMvpPresenter;
-import com.example.dell.myapplication.ui.main.MainPresenter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
-
-import javax.xml.transform.Result;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -52,12 +44,18 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
     private static final int REQUEST_IMAGE_FROM_GALLERY = 0;
     private static final int CAPTURE_IMAGE = 1;
     private String path = "";
+
+    private String salerName = "";
+    private String salerTel = "";
+    private String salerEmail = "";
+
     private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter =
             new AddProductToStorePresenter();
+    private DialogDisplayLoadingProgress dialogDisplayLoadingProgress;
 
-    private String comName = "";
-    private String comTel = "";
-    private String comEmail = "";
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    String userID = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,12 +72,16 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
         btnBack.setOnClickListener(this);
         imgProductImage.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
+        dialogDisplayLoadingProgress = new DialogDisplayLoadingProgress(context);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser.getUid();
 
         Bundle bundle = this.getArguments();
         if (bundle != null){
-            comName = bundle.getString("comName");
-            comTel = bundle.getString("comTel");
-            comEmail = bundle.getString("comEmail");
+            salerName = bundle.getString("comName");
+            salerTel = bundle.getString("comTel");
+            salerEmail = bundle.getString("comEmail");
         }
         return view;
     }
@@ -100,10 +102,28 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
                 String proPrice = etProductPrice.getText().toString().trim();
                 String proQuantity = etProductQuantity.getText().toString().trim();
                 String proDescription = etProductDescription.getText().toString().trim();
-                CompanyInfo companyInfo = new CompanyInfo(comName, comTel, comEmail);
-                ProductData productData = new ProductData(path, proTitle, proPrice,
-                        proQuantity, proDescription);
-                addProductToStoreMvpPresenter.onButtonSubmitListener(context, productData, companyInfo);
+                if (proTitle.isEmpty() || proPrice.isEmpty() || proQuantity.isEmpty() || path.isEmpty()){
+                    if (proTitle.isEmpty()){
+                        etProductTitle.setError("required");
+                    }
+                    if (proPrice.isEmpty()){
+                        etProductPrice.setError("required");
+                    }
+                    if (proQuantity.isEmpty()){
+                        etProductQuantity.setError("required");
+                    }
+                    if (path.isEmpty()){
+                        Snackbar.make(btnSubmit, "Please choose an image for your product.", Snackbar.LENGTH_SHORT).show();
+                    }
+                    return;
+                } else {
+                    dialogDisplayLoadingProgress.displayLoadingProgress("Saving data to database...");
+                    CompanyInfo companyInfo = new CompanyInfo(salerName, salerTel, salerEmail);
+                    ProductData productData = new ProductData(path, proTitle, proPrice,
+                            proQuantity, proDescription, userID, "", salerName, salerTel, salerEmail);
+                    addProductToStoreMvpPresenter.onButtonSubmitListener(context, productData, companyInfo,
+                            dialogDisplayLoadingProgress);
+                }
                 break;
             }
         }

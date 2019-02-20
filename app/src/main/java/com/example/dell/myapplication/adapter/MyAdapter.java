@@ -13,21 +13,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.ui.product.ProductDetailActivity;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.CompanyInfo;
-import com.example.dell.myapplication.model.Product;
 
 import java.util.List;
 import java.util.Locale;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private List<Product> productList;
+    private List<ProductData> productList;
     private AddProductToCartListener onAddClickListener;
     private DeleteProductFromCartListener onDeleteClickListener;
     private Context context;
 
-    public MyAdapter(Context context, List<Product> productList,
+    public MyAdapter(Context context, List<ProductData> productList,
                      AddProductToCartListener listener,
                      DeleteProductFromCartListener deleteListener) {
         this.productList = productList;
@@ -46,14 +46,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
-        final Product product = productList.get(position);
-        final CompanyInfo companyInfo = product.getCompanyInfo();
+        final ProductData product = productList.get(position);
+        String productPrice = product.getProductPrice().replace('$',' ');
 
-        viewHolder.productName.setText(product.getProTitle());
-        viewHolder.productPrice.setText(String.format(Locale.US, "%.2f", product.getProPrice()));
-        viewHolder.productQuantity.setText(String.format(Locale.US, "%d", product.getProQuantity()));
+        viewHolder.productName.setText(product.getProductTitle());
+        viewHolder.productPrice.setText(String.format(Locale.US, "%.2f", Double.parseDouble(productPrice)));
+        viewHolder.productQuantity.setText(String.format(Locale.US, "%d", 0));
         Glide.with(context)
-                .load(product.getProImage())
+                .load(product.getProductImage())
                 .into(viewHolder.productImage);
         viewHolder.btnAddProductToCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +71,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         viewHolder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String productPrice = product.getProductPrice().replace('$', ' ');
                 Intent intent = new Intent(context, ProductDetailActivity.class);
-                intent.putExtra("proImage", product.getProImage());
-                intent.putExtra("proName", product.getProTitle());
-                intent.putExtra("proPrice", product.getProPrice());
-                intent.putExtra("proQuantity", product.getProQuantity());
-                intent.putExtra("companyName", companyInfo.getCompanyName());
-                intent.putExtra("tel", companyInfo.getTel());
+                intent.putExtra("proImage", product.getProductImage());
+                intent.putExtra("proName", product.getProductTitle());
+                intent.putExtra("proPrice", productPrice);
+                intent.putExtra("proQuantity", product.getProductQuantity());
+                intent.putExtra("companyName", product.getSalerName());
+                intent.putExtra("tel", product.getSalerTel());
+                intent.putExtra("description", product.getProductDescription());
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity) context, viewHolder.productImage, viewHolder.productImage.getTransitionName());
                 context.startActivity(intent, options.toBundle());
@@ -112,10 +114,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     public interface AddProductToCartListener {
-        void onClick(Product mProduct, TextView productQuantity);
+        void onClick(ProductData mProduct, TextView productQuantity);
     }
 
     public interface DeleteProductFromCartListener {
-        void onClick(Product mProduct, TextView productQuantity);
+        void onClick(ProductData mProduct, TextView productQuantity);
     }
 }
