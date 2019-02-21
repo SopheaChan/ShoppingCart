@@ -31,7 +31,8 @@ import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProductInfoFragment extends Fragment implements View.OnClickListener {
+public class ProductInfoFragment extends Fragment implements View.OnClickListener
+, AddProductToStoreMvpView{
 
     private ImageView imgProductImage;
     private EditText etProductTitle;
@@ -49,8 +50,7 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
     private String salerTel = "";
     private String salerEmail = "";
 
-    private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter =
-            new AddProductToStorePresenter();
+    private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter;
     private DialogDisplayLoadingProgress dialogDisplayLoadingProgress;
 
     private FirebaseAuth firebaseAuth;
@@ -76,6 +76,8 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         userID = firebaseUser.getUid();
+        addProductToStoreMvpPresenter =
+                new AddProductToStorePresenter(this);
 
         Bundle bundle = this.getArguments();
         if (bundle != null){
@@ -168,5 +170,15 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
             path = MediaStore.Images.Media.insertImage(context.getContentResolver(), imageBitmap, "profile_picture", null);
             imgProductImage.setImageBitmap(imageBitmap);
         }
+    }
+
+    @Override
+    public void clearDataFromView() {
+        etProductTitle.setText("");
+        etProductPrice.setText("");
+        etProductQuantity.setText("");
+        etProductDescription.setText("");
+        imgProductImage.setImageResource(R.drawable.ic_image_black_24dp);
+        etProductTitle.requestFocus();
     }
 }

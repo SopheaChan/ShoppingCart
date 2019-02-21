@@ -52,11 +52,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<ProductData> mProductList = new ArrayList<>();
 
     private TextView tvTotalPrice;
-
     private CircleImageView profileImage;
     private TextView tvUserName;
+    private Button btnCancel;
+    private Button btnSubmit;
 
     private int backPress = 0;
+    private double amount = 0;
+    private int orderedQuantity;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -82,8 +85,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
-        Button btnCheckout = findViewById(R.id.button_check_out);
+        final Button btnCheckout = findViewById(R.id.button_check_out);
+        btnCancel = findViewById(R.id.button_cancel);
+        btnSubmit = findViewById(R.id.button_submit);
         tvTotalPrice = findViewById(R.id.total_price);
+
+        btnCancel.setVisibility(View.INVISIBLE);
+        btnSubmit.setVisibility(View.INVISIBLE);
 
         RecyclerView recyclerView = findViewById(R.id.my_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -98,33 +106,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         myAdapter = new MyAdapter(this, mProductList, new MyAdapter.AddProductToCartListener() {
             @Override
             public void onClick(ProductData mProduct, TextView proQuantity) {
-                int productQuantity = Integer.parseInt(proQuantity.getText().toString());
-                if (productQuantity < Integer.parseInt(mProduct.getProductQuantity())) {
-                    productQuantity++;
-//                    mProduct.setProductQuantity(Integer.toString(productQuantity));
-                    proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
+                orderedQuantity = Integer.parseInt(proQuantity.getText().toString());
+                final int availableQuantity = Integer.parseInt(mProduct.getProductQuantity());
+                if (orderedQuantity < availableQuantity) {
+                    orderedQuantity++;
+                    String productUnitPrice = mProduct.getProductPrice().replace('$', ' ' );
+                    amount += Double.parseDouble(productUnitPrice);
+                    proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
+                    double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
                     Snackbar.make(proQuantity, "Added " + mProduct.getProductTitle()
-                            + " to cart!" + "\n" + "Current order: " + productQuantity
-                            + "     " + "Amount: " + Double.toString(
-                            Double.parseDouble(mProduct.getProductPrice().replace('$', ' '))
-                                    * productQuantity), Snackbar.LENGTH_SHORT).show();
+                            + " to cart!" + "\n" + "Current order: " + orderedQuantity
+                            + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(),
-                            "You cannot make an order for 20 burgers a time.", Toast.LENGTH_SHORT).show();
+                            "You cannot make an order for "+mProduct.getProductTitle()+" more than "
+                                    +availableQuantity+" a time.", Toast.LENGTH_SHORT).show();
                 }
             }
         }, new MyAdapter.DeleteProductFromCartListener() {
             @Override
             public void onClick(ProductData mProduct, TextView proQuantity) {
-                int productQuantity = Integer.parseInt(proQuantity.getText().toString());
-                if (productQuantity > 0) {
-                    productQuantity--;
-                    mProduct.setProductQuantity(Integer.toString(productQuantity));
-                    proQuantity.setText(String.format(Locale.US, "%d", productQuantity));
+                orderedQuantity = Integer.parseInt(proQuantity.getText().toString());
+                if (orderedQuantity > 0) {
+                    String productUnitPrice = mProduct.getProductPrice().replace('$', ' ');
+                    amount -= Double.parseDouble(productUnitPrice);
+                    orderedQuantity--;
+                    double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
+                    proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
                     Snackbar.make(proQuantity, "Removed " + mProduct.getProductTitle() + " from cart!" +
-                            "\n" + "Order remained: " + productQuantity
-                            + "     " + "Amount: " + Double.toString(Double.parseDouble(mProduct.getProductPrice().replace('$', ' '))
-                            * productQuantity), Snackbar.LENGTH_SHORT).show();
+                            "\n" + "Order remained: " + orderedQuantity
+                            + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -133,7 +144,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainMvpPresenter.onCheckOutClickedListener(mProductList, tvTotalPrice);
+                mainMvpPresenter.onCheckOutClickedListener(amount, tvTotalPrice, btnCancel, btnSubmit, btnCheckout);
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainMvpPresenter.onButtonConcelClickedListener(btnCancel, btnSubmit, btnCheckout, tvTotalPrice);
             }
         });
         navigationView = findViewById(R.id.navigation_view);
@@ -249,16 +267,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mainMvpPresenter1.onViewProfileClicked();
                 break;
             }
-            case R.id.location_and_maps: {
-                Toast.makeText(this, "Navigation menu clicked Location", Toast.LENGTH_SHORT).show();
-                break;
-            }
             case R.id.setting: {
                 Toast.makeText(this, "Navigation menu clicked Setting", Toast.LENGTH_SHORT).show();
                 break;
             }
             case R.id.sale_product: {
                 startActivity(new Intent(MainActivity.this, AddProductToStoreActivity.class));
+                break;
+            }
+            case R.id.my_store: {
                 break;
             }
             case R.id.sign_out: {

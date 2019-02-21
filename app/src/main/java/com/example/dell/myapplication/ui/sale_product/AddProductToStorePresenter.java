@@ -45,8 +45,13 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
     private EditText etSaler;
     private EditText etTel;
     private EditText etEmail;
+    private AddProductToStoreMvpView addProductToStoreMvpView;
 
     public AddProductToStorePresenter(){}
+
+    public AddProductToStorePresenter(AddProductToStoreMvpView addProductToStoreMvpView){
+        this.addProductToStoreMvpView = addProductToStoreMvpView;
+    }
 
     public AddProductToStorePresenter(EditText etSaler, EditText etTel, EditText etEmail){
         this.etSaler = etSaler;
@@ -108,7 +113,7 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
                                                 productData.setProductImage(task.getResult().toString());
                                                 final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
                                                         .getReference("product");
-                                                String productID = databaseReference.push().getKey();
+                                                final String productID = databaseReference.push().getKey();
                                                 productData.setProductID(productID);
                                                 FirebaseDatabase.getInstance().getReference("product")
                                                         .child(productID)
@@ -117,8 +122,35 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    Toast.makeText(context, "Successfully saved data...", Toast.LENGTH_LONG).show();
-                                                                    displayLoadingProgress.getDialog().dismiss();
+                                                                    final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                                            .getReference("product_views")
+                                                                            .child(productID);
+                                                                    databaseReference.setValue("1")
+                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                                    if (task.isSuccessful()){
+                                                                                        FirebaseUser firebaseUser1 = FirebaseAuth.getInstance().getCurrentUser();
+                                                                                        String userID = firebaseUser1.getUid();
+                                                                                        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance()
+                                                                                                .getReference("my_product")
+                                                                                                .child(userID);
+                                                                                        String id = databaseReference.push().getKey();
+                                                                                        databaseReference1.child(id)
+                                                                                                .setValue(productID)
+                                                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                    @Override
+                                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                                        if (task.isSuccessful()){
+                                                                                                            displayLoadingProgress.getDialog().dismiss();
+                                                                                                            addProductToStoreMvpView.clearDataFromView();
+                                                                                                            Toast.makeText(context, "Successfully saved data...", Toast.LENGTH_LONG).show();
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                    }
+                                                                                }
+                                                                            });
                                                                 } else {
                                                                     displayLoadingProgress.getDialog().dismiss();
                                                                 }

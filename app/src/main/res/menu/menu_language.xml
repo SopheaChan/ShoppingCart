@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Languages">
+        <menu>
+            <item android:id="@+id/khmer_language"
+                android:title="ភាសាខ្មែរ"
+                android:icon="@drawable/ic_cambodia_flag"/>
+            <item android:id="@+id/english_language"
+                android:title="English"
+                android:icon="@drawable/ic_united_kingdom_flag"/>
+        </menu>
+    </item>
+</menu>

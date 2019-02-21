@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,7 +31,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.dell.myapplication.R;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,7 +45,6 @@ import com.google.maps.android.PolyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -248,8 +245,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.setMapType(mMapType);
 
-        CameraUpdate camera = CameraUpdateFactory.newLatLng(new LatLng(11.546982, 104.890985));
-        mMap.animateCamera(camera);
+//        CameraUpdate camera = CameraUpdateFactory.newLatLng(new LatLng(11.546982, 104.890985));
+//        mMap.animateCamera(camera);
 
         if (checkLocationPermission()) {
             mMap.setMyLocationEnabled(true);
@@ -271,7 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.map_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_map, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

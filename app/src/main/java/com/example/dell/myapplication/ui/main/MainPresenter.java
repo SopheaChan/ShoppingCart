@@ -67,6 +67,7 @@ public class MainPresenter implements MainMvpPresenter {
     private DialogDisplayLoadingProgress dialogDisplayLoadingProgress;
 
     private static final int REQUEST_GALLERY_ACCESS = 0;
+    private int newProductViews;
 
     public MainPresenter(Context context){
         this.context = context;
@@ -184,16 +185,14 @@ public class MainPresenter implements MainMvpPresenter {
     }
 
     @Override
-    public void onCheckOutClickedListener(List<ProductData> productList, TextView tvTotalPrice) {
-        double totalAmount = 0.0;
+    public void onCheckOutClickedListener(double totalAmount, TextView tvTotalPrice,
+                                          Button btnCancel, Button btnSubmit, Button btnCheckout) {
         String dollarSymbol = "$";
-        for (int i = 0; i < productList.size(); i++) {
-            ProductData product = productList.get(i);
-            totalAmount += Double.parseDouble(product.getProductPrice().replace('$', ' '))
-                    * Integer.parseInt(product.getProductQuantity());
-        }
         //Split the number after the dot of total amount, only two characters will be taken
         tvTotalPrice.setText(String.format(Locale.US, dollarSymbol + "%.2f", totalAmount));
+        btnCheckout.setVisibility(View.INVISIBLE);
+        btnCancel.setVisibility(View.VISIBLE);
+        btnSubmit.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -296,5 +295,40 @@ public class MainPresenter implements MainMvpPresenter {
                             displayLoadingProgress.getDialog().dismiss();
                     }
                 });
+    }
+
+    @Override
+    public String addProductViewsRecord(final String productID) {
+
+        mDatabaseRef = FirebaseDatabase.getInstance()
+                .getReference("product_views")
+                .child(productID);
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String productViews = dataSnapshot.getValue(String.class);
+                if (productViews != null) {
+                    newProductViews = Integer.parseInt(productViews) + 1;
+                    FirebaseDatabase.getInstance().getReference("product_views")
+                            .child(productID)
+                            .setValue(Integer.toString(newProductViews));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return Integer.toString(newProductViews);
+    }
+
+    @Override
+    public void onButtonConcelClickedListener(Button btnCancel, Button btnSubmit, Button btnCheckout,
+                                              TextView tvTotalPrice) {
+        btnCancel.setVisibility(View.INVISIBLE);
+        btnSubmit.setVisibility(View.INVISIBLE);
+        btnCheckout.setVisibility(View.VISIBLE);
+        tvTotalPrice.setText("$0.00");
     }
 }

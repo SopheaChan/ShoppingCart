@@ -17,7 +17,7 @@ import android.widget.Button;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.ViewPagerAdapter;
 
-public class AddProductToStoreActivity extends AppCompatActivity implements AddProductToStoreMvpView{
+public class AddProductToStoreActivity extends AppCompatActivity{
     private static final int REQUEST_GALLERY_ACCESS = 0;
 
     @Override

@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.dell.myapplication.model.ProductData;
+import com.example.dell.myapplication.ui.main.MainMvpPresenter;
+import com.example.dell.myapplication.ui.main.MainPresenter;
 import com.example.dell.myapplication.ui.product.ProductDetailActivity;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.CompanyInfo;
@@ -26,6 +29,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private AddProductToCartListener onAddClickListener;
     private DeleteProductFromCartListener onDeleteClickListener;
     private Context context;
+    private MainMvpPresenter mainMvpPresenter;
 
     public MyAdapter(Context context, List<ProductData> productList,
                      AddProductToCartListener listener,
@@ -34,6 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         this.onAddClickListener = listener;
         this.onDeleteClickListener = deleteListener;
         this.context = context;
+        mainMvpPresenter = new MainPresenter(context);
     }
 
     @NonNull
@@ -71,6 +76,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         viewHolder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String productViews = mainMvpPresenter.addProductViewsRecord(product.getProductID());
                 String productPrice = product.getProductPrice().replace('$', ' ');
                 Intent intent = new Intent(context, ProductDetailActivity.class);
                 intent.putExtra("proImage", product.getProductImage());
@@ -80,6 +86,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 intent.putExtra("companyName", product.getSalerName());
                 intent.putExtra("tel", product.getSalerTel());
                 intent.putExtra("description", product.getProductDescription());
+                intent.putExtra("productID", product.getProductID());
+                intent.putExtra("productViews", productViews);
+                intent.putExtra("userID", product.getUserID());
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity) context, viewHolder.productImage, viewHolder.productImage.getTransitionName());
                 context.startActivity(intent, options.toBundle());
