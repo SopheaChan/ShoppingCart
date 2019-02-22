@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cam e-Mall</string>
+    <string name="open_drawer">Open drawer...</string>
+    <string name="close_drawer">Close drawer...</string>
+    <string name="gallery">ទាញយករូបភាព</string>
+    <string name="take_photo">ថតរូប</string>
+    <string name="sample_product_description">
+            Fresh milk is a natural high-quality product of Dream Farm,
+        a leading cow farm and milk production factory in Cambodia.
+    </string>
+    <string name="black_burger">
+
+    </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">ផែនទី</string>
+    <string name="profile">ប្រូហ្វាល់</string>
+    <string name="setting">ការគំណត់</string>
+    <string name="location_and_maps">ទីតាំង និង ផែនទី</string>
+    <string name="sub_header">Action Menu</string>
+    <string name="sale_product">ដាក់លក់ទំនិញ</string>
+    <string name="sign_out">ចាកចេញ</string>
+    <string name="view_on_maps">មើលផែនទី</string>
+    <string name="back"><![CDATA[<< ត្រឡប់]]></string>
+    <string name="skip"><![CDATA[រំលង >>]]></string>
+    <string name="company_name">ឈ្មោះក្រុមហ៊ុន</string>
+    <string name="telephone">លេខទូរស័ព្ទ</string>
+    <string name="email">អីុមែល</string>
+    <string name="next"><![CDATA[ទៅមុខ >>]]></string>
+    <string name="submit"><![CDATA[ដាក់ស្នើរ >>]]></string>
+    <string name="product_description">ការពណ៏នា</string>
+    <string name="total_price">តម្លៃសរុប</string>
+    <string name="check_out">ទូទាត់</string>
+    <string name="cancel">បោះបង់</string>
+    <string name="submit1">ដាក់ស្នើរ</string>
+</resources>

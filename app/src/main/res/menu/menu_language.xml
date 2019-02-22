@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/addToCard"
+        android:title=" "
+        android:icon="@drawable/pressed_status_button_add_to_cart"
+        app:showAsAction="always"/>
     <item android:title="Languages">
         <menu>
+            <group android:checkableBehavior="single">
             <item android:id="@+id/khmer_language"
                 android:title="ភាសាខ្មែរ"
                 android:icon="@drawable/ic_cambodia_flag"/>
             <item android:id="@+id/english_language"
                 android:title="English"
+                android:checked="true"
                 android:icon="@drawable/ic_united_kingdom_flag"/>
+            </group>
         </menu>
     </item>
 </menu>

@@ -9,4 +9,5 @@
     <color name="colorSeaWater">#4286F4</color>
     <color name="colorLightBlue">#0a58d6</color>
     <color name="colorHint">#D3D3DA</color>
+    <color name="colorProductDetailBackground">#03A9F4</color>
 </resources>

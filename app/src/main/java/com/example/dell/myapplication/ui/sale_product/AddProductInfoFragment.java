@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
-import com.example.dell.myapplication.listener.OnDialogClickListener;
+import com.example.dell.myapplication.listener.OnDialogMenuClickListener;
 import com.example.dell.myapplication.model.CompanyInfo;
 import com.example.dell.myapplication.model.ProductData;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +31,7 @@ import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ProductInfoFragment extends Fragment implements View.OnClickListener
+public class AddProductInfoFragment extends Fragment implements View.OnClickListener
 , AddProductToStoreMvpView{
 
     private ImageView imgProductImage;
@@ -53,8 +53,6 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
     private AddProductToStoreMvpPresenter addProductToStoreMvpPresenter;
     private DialogDisplayLoadingProgress dialogDisplayLoadingProgress;
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser firebaseUser;
     String userID = "";
 
     @Override
@@ -73,8 +71,8 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
         imgProductImage.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         dialogDisplayLoadingProgress = new DialogDisplayLoadingProgress(context);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         userID = firebaseUser.getUid();
         addProductToStoreMvpPresenter =
                 new AddProductToStorePresenter(this);
@@ -131,7 +129,7 @@ public class ProductInfoFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private OnDialogClickListener onDialogClick = new OnDialogClickListener() {
+    private OnDialogMenuClickListener onDialogClick = new OnDialogMenuClickListener() {
         @Override
         public void onItemClickListener(int result, View view, Dialog dialog) {
             switch (result) {

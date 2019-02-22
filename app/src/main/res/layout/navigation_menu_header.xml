@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="@drawable/order_food_online"
+    android:background="@drawable/ic_order_food_online"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
@@ -17,7 +17,7 @@
         android:layout_height="60dp"
         android:elevation="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/boy_icon" />
+        android:src="@drawable/ic_boy_icon" />
 
     <TextView
         android:id="@+id/tvProfileName"

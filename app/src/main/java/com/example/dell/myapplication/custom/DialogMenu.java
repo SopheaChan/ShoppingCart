@@ -9,18 +9,18 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dell.myapplication.listener.OnDialogClickListener;
+import com.example.dell.myapplication.listener.OnDialogMenuClickListener;
 import com.example.dell.myapplication.R;
 
 public class DialogMenu implements View.OnClickListener{
     private Context context;
     private Dialog dialog;
-    private OnDialogClickListener callback;
+    private OnDialogMenuClickListener callback;
     private static final int GALLERY = 1;
     private static final int CAMERA = 2;
     private static final int VIEW_PROFILE_PICTURE = 3;
 
-    public  DialogMenu(Context context, OnDialogClickListener callback){
+    public  DialogMenu(Context context, OnDialogMenuClickListener callback){
         this.context = context;
         this.callback = callback;
         this.dialog =  new Dialog(this.context, R.style.DialogTheme);

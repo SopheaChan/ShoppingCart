@@ -1,9 +1,12 @@
 package com.example.dell.myapplication.ui.product;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,25 +18,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.PushNotification;
 import com.example.dell.myapplication.ui.map.MapsActivity;
 
-import java.security.Permission;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import timber.log.Timber;
 
-public class ProductDetailActivity extends AppCompatActivity{
+public class ProductDetailActivity extends AppCompatActivity {
 
     private String mProductImage;
     private String mProductName;
@@ -43,23 +45,24 @@ public class ProductDetailActivity extends AppCompatActivity{
     private String mTel;
     private String mDescription;
     private String mProductID;
-    private String mUserID;
+//    private String mUserID;
 
     private TextView tvProductName;
     private TextView tvProductPrice;
-    private TextView tvOrderedProduct;
-    private TextView tvTotalAmount;
+    private TextView tvProductQuantity;
+    //    private TextView tvOrderedProduct;
+//    private TextView tvTotalAmount;
     private TextView tvCompanyName;
     private TextView tvTel;
     private TextView tvViewOnMaps;
     private TextView tvDescription;
     private TextView tvProductViewsCount;
-    private EditText etOrderQuantity;
+    //    private EditText etOrderQuantity;
     private ImageView imgProductImage;
-    private ImageView btnAddToCart;
-    private ImageView btnRemoveFromCart;
+    //    private ImageView btnAddToCart;
+//    private ImageView btnRemoveFromCart;
     private Button btnSubmit;
-    private CircleImageView imgSalerProfile;
+    //    private CircleImageView imgSalerProfile;
     private android.support.v7.widget.Toolbar toolbar;
 
     private static final int REQUEST_PHONE_CALL_PERMISSION = 1;
@@ -69,8 +72,9 @@ public class ProductDetailActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBarGradiant(this);
         setContentView(R.layout.activity_product_detail);
-        toolbar = findViewById(R.id.productDetailToolbar);
+        toolbar = findViewById(R.id.toolbarProductDetail);
         setSupportActionBar(toolbar);
 
         mProductImage = getIntent().getStringExtra("proImage");
@@ -81,24 +85,23 @@ public class ProductDetailActivity extends AppCompatActivity{
         mTel = getIntent().getStringExtra("tel");
         mDescription = getIntent().getStringExtra("description");
         mProductID = getIntent().getStringExtra("productID");
-        mUserID = getIntent().getStringExtra("userID");
+//        mUserID = getIntent().getStringExtra("userID");
 
         tvProductName = findViewById(R.id.tvProductName);
         tvProductPrice = findViewById(R.id.tvPrice);
-        tvOrderedProduct = findViewById(R.id.tvOrderedItem);
-        tvTotalAmount = findViewById(R.id.tvTotalAmount1);
+//        tvOrderedProduct = findViewById(R.id.tvOrderedItem);
         tvCompanyName = findViewById(R.id.tvCompanyName);
         tvTel = findViewById(R.id.tvSalerTel);
         tvDescription = findViewById(R.id.tvDescription);
         tvViewOnMaps = findViewById(R.id.tvViewOnMap);
         tvProductViewsCount = findViewById(R.id.tvViewTimes);
-        etOrderQuantity = findViewById(R.id.etOrderedQuantity);
+        tvProductQuantity = findViewById(R.id.tvProductQuantity);
+//        etOrderQuantity = findViewById(R.id.etOrderedQuantity);
         imgProductImage = findViewById(R.id.imgProductImage);
-        imgSalerProfile = findViewById(R.id.imgSalerProfile);
-        btnAddToCart = findViewById(R.id.btnAddToCart1);
-        btnRemoveFromCart = findViewById(R.id.btnRemoveFromCart1);
+//        imgSalerProfile = findViewById(R.id.imgSalerProfile);
+//        btnAddToCart = findViewById(R.id.btnAddToCart1);
+//        btnRemoveFromCart = findViewById(R.id.btnRemoveFromCart1);
         btnSubmit = findViewById(R.id.btnSubmit1);
-
 
 
         setDataToView();
@@ -106,19 +109,19 @@ public class ProductDetailActivity extends AppCompatActivity{
     }
 
     private void setViewListener() {
-        btnAddToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAddToCartClicked();
-            }
-        });
+//        btnAddToCart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onAddToCartClicked();
+//            }
+//        });
 
-        btnRemoveFromCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRemoveFromCartClicked();
-            }
-        });
+//        btnRemoveFromCart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onRemoveFromCartClicked();
+//            }
+//        });
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,16 +148,16 @@ public class ProductDetailActivity extends AppCompatActivity{
     }
 
     private void startPhoneCall() {
-            try {
-                Intent startPhoneCall = new Intent(Intent.ACTION_DIAL);
-                if (startPhoneCall.resolveActivity(getPackageManager()) != null) {
-                    startPhoneCall.setPackage("com.android.phone");
-                    startPhoneCall.setData(Uri.parse("Tel: " + mTel));
-                    startActivity(startPhoneCall);
-                }
-            } catch (ActivityNotFoundException e){
-                Snackbar.make(tvTel, "Error: " + e.toString(), Snackbar.LENGTH_SHORT).show();
+        try {
+            Intent startPhoneCall = new Intent(Intent.ACTION_DIAL);
+            if (startPhoneCall.resolveActivity(getPackageManager()) != null) {
+                startPhoneCall.setPackage("com.android.phone");
+                startPhoneCall.setData(Uri.parse("Tel: " + mTel));
+                startActivity(startPhoneCall);
             }
+        } catch (ActivityNotFoundException e) {
+            Snackbar.make(tvTel, "Error: " + e.toString(), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void onFindLocation() {
@@ -175,28 +178,24 @@ public class ProductDetailActivity extends AppCompatActivity{
         Toast.makeText(ProductDetailActivity.this, "Submitted order...", Toast.LENGTH_SHORT).show();
     }
 
-    private void onRemoveFromCartClicked() {
-        Toast.makeText(ProductDetailActivity.this, "Removed from cart...", Toast.LENGTH_SHORT).show();
-    }
+//    private void onRemoveFromCartClicked() {
+//        Toast.makeText(ProductDetailActivity.this, "Removed from cart...", Toast.LENGTH_SHORT).show();
+//    }
 
-    private void onAddToCartClicked() {
-        productDetailMvpPresenter.onAddToCart(mProductQuantity, mProductPrice, tvOrderedProduct,
-                tvTotalAmount, etOrderQuantity);
-    }
+//    private void onAddToCartClicked() {
+//        productDetailMvpPresenter.onAddToCart(mProductQuantity, mProductPrice, tvOrderedProduct,
+//                tvTotalAmount, etOrderQuantity);
+//    }
 
     private void setDataToView() {
-        double totalAmount = mProductPrice * mProductQuantity;
         tvProductName.setText(mProductName);
         tvProductPrice.setText(String.format(Locale.US, "$" + "%.2f", mProductPrice));
-        tvOrderedProduct.setText(String.format(Locale.US, "%d", mProductQuantity));
-        tvTotalAmount.setText(String.format(Locale.US, "$" + "%.2f", totalAmount));
         tvCompanyName.setText(mCompanyName);
         tvTel.setText(mTel);
         tvDescription.setText(mDescription);
-//        tvProductViewsCount.setText(" " + mProductViews + " views");
+        tvProductQuantity.setText(String.format(Locale.US, "%d", mProductQuantity));
         productDetailMvpPresenter.getProductViews(mProductID, tvProductViewsCount);
         Glide.with(this).load(Uri.parse(mProductImage)).into(imgProductImage);
-        productDetailMvpPresenter.getSalerProfile(mUserID, this, imgSalerProfile);
     }
 
     private boolean requestPhoneCallPermission() {
@@ -230,15 +229,29 @@ public class ProductDetailActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.khmer_language: {
+                item.setChecked(true);
                 break;
             }
             case R.id.english_language: {
+                item.setChecked(true);
                 break;
             }
-            default: break;
+            default:
+                break;
         }
         return true;
+    }
+
+    //customize status bar and navigation bar
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarGradiant(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(activity.getResources().getColor(R.color.colorProductDetailBackground));
+            window.setNavigationBarColor(activity.getResources().getColor(R.color.fui_transparent));
+        }
     }
 }

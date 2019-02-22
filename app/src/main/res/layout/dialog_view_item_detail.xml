@@ -14,7 +14,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="52dp"
-        android:background="@drawable/view_item_detail_dialog_border"
+        android:background="@drawable/bacground_view_item_detail_dialog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:srcCompat="@drawable/fresh_milk" />
+        app:srcCompat="@drawable/ic_fresh_milk" />
 
     <TextView
         android:id="@+id/tvProductName"
@@ -136,7 +136,7 @@
         android:layout_width="0dp"
         android:layout_height="103dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/make_order_box_border"
+        android:background="@drawable/background_make_order_box"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
@@ -176,7 +176,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView15"
-            app:srcCompat="@drawable/button_add_to_cart_pressed_status" />
+            app:srcCompat="@drawable/pressed_status_button_add_to_cart" />
 
         <ImageView
             android:id="@+id/btnRemoveFromCart1"
@@ -187,7 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btnAddToCart1"
             app:layout_constraintTop_toTopOf="@+id/btnAddToCart1"
-            app:srcCompat="@drawable/remove_from_cart_pressed_state" />
+            app:srcCompat="@drawable/pressed_state_remove_from_cart_button" />
     </android.support.constraint.ConstraintLayout>
 
     <TextView
@@ -295,7 +295,7 @@
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/button_submit_border"
+        android:background="@drawable/background_button_submit"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,7 +11,7 @@
         android:layout_height="35dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/loading_image" />
+        android:src="@drawable/ic_loading_image" />
 
     <TextView
         android:id="@+id/tvLoadingLabel"

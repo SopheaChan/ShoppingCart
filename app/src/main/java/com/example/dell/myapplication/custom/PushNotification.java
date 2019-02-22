@@ -19,19 +19,16 @@ public class PushNotification {
     private static final String NOTIFICATION_CHANNEL_ID= "4565";
     private static final String NOTIFICATION_CHANNEL_NAME = "NOTIFICATION_CHANNEL_NAME";
     private static final int importanceLevel = NotificationManager.IMPORTANCE_DEFAULT;
-    private NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, importanceLevel);
-    private NotificationManager notificationManager;
-    private Notification notification;
-    private String contentText;
 
     public PushNotification(Context context, String companyName, String productName){
 
-        contentText = "Congratulations, you have successfully purchased "
-                +productName+" from our company."+"\n"+"Thank you.";
-        this.notificationChannel.enableLights(true);
-        this.notificationChannel.setLightColor(Color.rgb(66, 101, 244));
+        String contentText = "Congratulations, you have successfully purchased "
+                + productName + " from our company." + "\n" + "Thank you.";
+        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, importanceLevel);
+        notificationChannel.enableLights(true);
+        notificationChannel.setLightColor(Color.rgb(66, 101, 244));
 
-        this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(notificationChannel);
 
         // Create an explicit intent for an Activity in your app
@@ -39,7 +36,7 @@ public class PushNotification {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        notification = new Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
+        Notification notification = new Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(companyName)
                 .setContentText(contentText)
                 .setChannelId(NOTIFICATION_CHANNEL_ID)

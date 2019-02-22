@@ -1,44 +1,32 @@
 package com.example.dell.myapplication.ui.main;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.transition.Fade;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
-import com.example.dell.myapplication.custom.DialogMenu;
 import com.example.dell.myapplication.custom.DisplayProfileInfo;
 import com.example.dell.myapplication.custom.ProfileImageView;
 import com.example.dell.myapplication.listener.ProfileImageViewOnClickListener;
-import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.model.UserInfo;
 import com.example.dell.myapplication.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,8 +37,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -61,6 +47,8 @@ public class MainPresenter implements MainMvpPresenter {
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mDatabaseRef;
+    private DatabaseReference mDatabaseRefProduct;
+    private String userID;
     private Context context;
     private ProfileImageView profileImageView;
     private MainMvpView mainMvpView;
@@ -69,12 +57,13 @@ public class MainPresenter implements MainMvpPresenter {
     private static final int REQUEST_GALLERY_ACCESS = 0;
     private int newProductViews;
 
-    public MainPresenter(Context context){
+    public MainPresenter(Context context) {
         this.context = context;
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
-        String userID = mFirebaseUser.getUid();
+        userID = mFirebaseUser.getUid();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("user").child(userID);
+        mDatabaseRefProduct = FirebaseDatabase.getInstance().getReference("product");
     }
 
     public MainPresenter(Context context, MainMvpView mainMvpView,
@@ -85,8 +74,9 @@ public class MainPresenter implements MainMvpPresenter {
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
-        String userID = mFirebaseUser.getUid();
+        userID = mFirebaseUser.getUid();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("user").child(userID);
+        mDatabaseRefProduct = FirebaseDatabase.getInstance().getReference("product");
     }
 
     @Override
@@ -129,13 +119,7 @@ public class MainPresenter implements MainMvpPresenter {
     public void onUpdateUserInfo(final UserInfo userInfo, final DialogDisplayLoadingProgress displayLoadingProgress,
                                  final EditText etName, final EditText etGender,
                                  final EditText etTel, final EditText etOther, final Button btnEditProfile) {
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mAuth.getCurrentUser();
-        assert mFirebaseUser != null;
-        String userID = mFirebaseUser.getUid();
         try {
-
-            mDatabaseRef = FirebaseDatabase.getInstance().getReference("user").child(userID);
             mDatabaseRef.child("uEmail").setValue(userInfo.getuEmail());
             mDatabaseRef.child("uName").setValue(userInfo.getuName());
             mDatabaseRef.child("uTel").setValue(userInfo.getuTel());
@@ -159,7 +143,7 @@ public class MainPresenter implements MainMvpPresenter {
                 }
             });
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("OnUpdatUserInfo: ", e.toString());
         }
     }
@@ -185,13 +169,11 @@ public class MainPresenter implements MainMvpPresenter {
     }
 
     @Override
-    public void onCheckOutClickedListener(double totalAmount, TextView tvTotalPrice,
-                                          Button btnCancel, Button btnSubmit, Button btnCheckout) {
+    public void onCheckOutClickedListener(double totalAmount, TextView tvTotalPrice, Button btnSubmit, Button btnCheckout) {
         String dollarSymbol = "$";
         //Split the number after the dot of total amount, only two characters will be taken
         tvTotalPrice.setText(String.format(Locale.US, dollarSymbol + "%.2f", totalAmount));
         btnCheckout.setVisibility(View.INVISIBLE);
-        btnCancel.setVisibility(View.VISIBLE);
         btnSubmit.setVisibility(View.VISIBLE);
     }
 
@@ -224,9 +206,6 @@ public class MainPresenter implements MainMvpPresenter {
             public void onClickListener(final String buttonTitle, final Dialog dialog) {
                 if (buttonTitle.equalsIgnoreCase("upload")) {
                     displayLoadingProgress.displayLoadingProgress("Uploading...");
-                    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                    final String userID = firebaseUser.getUid();
                     StorageReference storageReference = FirebaseStorage.getInstance()
                             .getReference("profile")
                             .child(userID);
@@ -242,9 +221,7 @@ public class MainPresenter implements MainMvpPresenter {
                                                 .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Uri> task) {
-                                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                                                .getReference("user").child(userID).child("profileUrl");
-                                                        databaseReference.setValue(Objects.requireNonNull(task.getResult()).toString())
+                                                        mDatabaseRef.child("profileUrl").setValue(Objects.requireNonNull(task.getResult()).toString())
                                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                     @Override
                                                                     public void onComplete(@NonNull Task<Void> task) {
@@ -273,28 +250,23 @@ public class MainPresenter implements MainMvpPresenter {
     @Override
     public void setDataToList(final MyAdapter myAdapter, final List<ProductData> mProductList,
                               final DialogDisplayLoadingProgress displayLoadingProgress) {
-        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String userID = mFirebaseUser.getUid();
+        mDatabaseRefProduct.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mProductList.clear();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    ProductData productData = dataSnapshot1.getValue(ProductData.class);
+                    mProductList.add(productData);
+                    displayLoadingProgress.getDialog().dismiss();
+                }
+                myAdapter.notifyDataSetChanged();
+            }
 
-        mDatabaseRef = FirebaseDatabase.getInstance()
-                .getReference("product");
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        mProductList.clear();
-                        for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            ProductData productData = dataSnapshot1.getValue(ProductData.class);
-                            mProductList.add(productData);
-                            displayLoadingProgress.getDialog().dismiss();
-                        }
-                        myAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                            displayLoadingProgress.getDialog().dismiss();
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                displayLoadingProgress.getDialog().dismiss();
+            }
+        });
     }
 
     @Override
@@ -324,9 +296,8 @@ public class MainPresenter implements MainMvpPresenter {
     }
 
     @Override
-    public void onButtonConcelClickedListener(Button btnCancel, Button btnSubmit, Button btnCheckout,
+    public void onButtonConcelClickedListener(Button btnSubmit, Button btnCheckout,
                                               TextView tvTotalPrice) {
-        btnCancel.setVisibility(View.INVISIBLE);
         btnSubmit.setVisibility(View.INVISIBLE);
         btnCheckout.setVisibility(View.VISIBLE);
         tvTotalPrice.setText("$0.00");

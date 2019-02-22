@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <group>
-        <item android:title="@string/profile"
-            android:id="@+id/profile"/>
-        <item android:title="@string/setting"
-            android:id="@+id/setting"/>
+        <item
+            android:id="@+id/profile"
+            android:title="@string/profile" />
+        <item
+            android:id="@+id/setting"
+            android:title="@string/setting" />
     </group>
     <item android:title="@string/sub_header">
         <menu>
-            <item android:id="@+id/my_store"
-                android:title="My Store"/>
-            <item android:title="@string/sale_product"
-                android:id="@+id/sale_product"/>
-            <item android:title="@string/sign_out"
-                android:id="@+id/sign_out"/>
+            <item
+                android:id="@+id/my_store"
+                android:title="My Store" />
+            <item
+                android:id="@+id/sale_product"
+                android:title="@string/sale_product" />
+            <item
+                android:id="@+id/sign_out"
+                android:title="@string/sign_out" />
         </menu>
     </item>
     <item android:title="Languages">
         <menu>
-            <item android:id="@+id/khmer_language"
-                android:title="ភាសាខ្មែរ"
-                android:icon="@drawable/ic_cambodia_flag"/>
-            <item android:id="@+id/english_language"
-                android:title="English"
-                android:icon="@drawable/ic_united_kingdom_flag"/>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/language_khmer"
+                    android:icon="@drawable/ic_cambodia_flag"
+                    android:title="ភាសាខ្មែរ" />
+                <item
+                    android:id="@+id/language_english"
+                    android:icon="@drawable/ic_united_kingdom_flag"
+                    android:title="English"/>
+            </group>
         </menu>
     </item>
 </menu>

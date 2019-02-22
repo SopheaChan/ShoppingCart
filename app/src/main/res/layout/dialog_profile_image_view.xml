@@ -13,14 +13,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/boy_icon" />
+        app:srcCompat="@drawable/ic_boy_icon" />
 
     <Button
         android:id="@+id/btnDone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/dialog_menu_shape"
+        android:background="@drawable/background_dialog_menu"
         android:elevation="10dp"
         android:fontFamily="@font/railway"
         android:text="Done"

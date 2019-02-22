@@ -45,7 +45,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-                app:srcCompat="@drawable/boy_icon" />
+                app:srcCompat="@drawable/ic_boy_icon" />
 
             <TextView
                 android:id="@+id/textView2"

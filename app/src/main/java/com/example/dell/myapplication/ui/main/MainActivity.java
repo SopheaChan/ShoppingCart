@@ -1,11 +1,16 @@
 package com.example.dell.myapplication.ui.main;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -19,8 +24,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,8 +38,7 @@ import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.adapter.MyAdapter;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.custom.DialogMenu;
-import com.example.dell.myapplication.listener.OnDialogClickListener;
-import com.example.dell.myapplication.model.Product;
+import com.example.dell.myapplication.listener.OnDialogMenuClickListener;
 import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.model.UserInfo;
 import com.example.dell.myapplication.ui.sale_product.AddProductToStoreActivity;
@@ -43,10 +50,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-    MainMvpView{
+        MainMvpView {
     private MyAdapter myAdapter;
 
     private List<ProductData> mProductList = new ArrayList<>();
@@ -54,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView tvTotalPrice;
     private CircleImageView profileImage;
     private TextView tvUserName;
-    private Button btnCancel;
     private Button btnSubmit;
 
     private int backPress = 0;
@@ -69,14 +74,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MainMvpPresenter mainMvpPresenter1;
     private DialogDisplayLoadingProgress displayLoadingProgress;
 
+    private Locale myLocale;
+    String currentLang;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setStatusBarGradiant(this);
         setContentView(R.layout.activity_main);
 
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle toggle = new
                 ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
@@ -85,13 +95,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
-        final Button btnCheckout = findViewById(R.id.button_check_out);
-        btnCancel = findViewById(R.id.button_cancel);
-        btnSubmit = findViewById(R.id.button_submit);
+        navigationView = findViewById(R.id.navigation_view);
+        View headerView = navigationView.getHeaderView(0);
+
+        tvUserName = headerView.findViewById(R.id.tvProfileName);
         tvTotalPrice = findViewById(R.id.total_price);
 
-        btnCancel.setVisibility(View.INVISIBLE);
+        profileImage = headerView.findViewById(R.id.imgProfilePhoto);
+
+        btnSubmit = findViewById(R.id.button_submit);
         btnSubmit.setVisibility(View.INVISIBLE);
+        final Button btnCheckout = findViewById(R.id.button_check_out);
 
         RecyclerView recyclerView = findViewById(R.id.my_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -100,43 +114,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         displayLoadingProgress = new DialogDisplayLoadingProgress(MainActivity.this);
         displayLoadingProgress.displayLoadingProgress("Loading...");
-
         mainMvpPresenter1 = new MainPresenter(MainActivity.this, this, displayLoadingProgress);
 
         myAdapter = new MyAdapter(this, mProductList, new MyAdapter.AddProductToCartListener() {
             @Override
             public void onClick(ProductData mProduct, TextView proQuantity) {
-                orderedQuantity = Integer.parseInt(proQuantity.getText().toString());
-                final int availableQuantity = Integer.parseInt(mProduct.getProductQuantity());
-                if (orderedQuantity < availableQuantity) {
-                    orderedQuantity++;
-                    String productUnitPrice = mProduct.getProductPrice().replace('$', ' ' );
-                    amount += Double.parseDouble(productUnitPrice);
-                    proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
-                    double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
-                    Snackbar.make(proQuantity, "Added " + mProduct.getProductTitle()
-                            + " to cart!" + "\n" + "Current order: " + orderedQuantity
-                            + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "You cannot make an order for "+mProduct.getProductTitle()+" more than "
-                                    +availableQuantity+" a time.", Toast.LENGTH_SHORT).show();
-                }
+                onAddProductToCart(mProduct, proQuantity);
             }
         }, new MyAdapter.DeleteProductFromCartListener() {
             @Override
             public void onClick(ProductData mProduct, TextView proQuantity) {
                 orderedQuantity = Integer.parseInt(proQuantity.getText().toString());
-                if (orderedQuantity > 0) {
-                    String productUnitPrice = mProduct.getProductPrice().replace('$', ' ');
-                    amount -= Double.parseDouble(productUnitPrice);
-                    orderedQuantity--;
-                    double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
-                    proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
-                    Snackbar.make(proQuantity, "Removed " + mProduct.getProductTitle() + " from cart!" +
-                            "\n" + "Order remained: " + orderedQuantity
-                            + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
-                }
+                onRemoveProductFromCart(mProduct, proQuantity);
             }
         });
 
@@ -144,70 +133,101 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainMvpPresenter.onCheckOutClickedListener(amount, tvTotalPrice, btnCancel, btnSubmit, btnCheckout);
+                mainMvpPresenter.onCheckOutClickedListener(amount, tvTotalPrice, btnSubmit, btnCheckout);
             }
         });
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainMvpPresenter.onButtonConcelClickedListener(btnCancel, btnSubmit, btnCheckout, tvTotalPrice);
-            }
-        });
-        navigationView = findViewById(R.id.navigation_view);
-
-        View headerView = navigationView.getHeaderView(0);
-        tvUserName = headerView.findViewById(R.id.tvProfileName);
-        profileImage = headerView.findViewById(R.id.imgProfilePhoto);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DialogMenu(MainActivity.this, new OnDialogClickListener() {
+                new DialogMenu(MainActivity.this, new OnDialogMenuClickListener() {
                     @Override
                     public void onItemClickListener(final int result, View view, final Dialog dialog) {
                         checkDeviceCamera(view);
-                        switch (result) {
-                            case 1: {
-                                mainMvpPresenter.onOpenGallery(MainActivity.this, dialog);
-                                break;
-                            }
-                            case 2: {
-                                if (checkCameraPermission()) {
-                                    dispatchTakePictureIntent();
-                                }
-                                break;
-                            }
-                            case 3: {
-                                mainMvpPresenter.onViewProfileImage();
-                                dialog.dismiss();
-                                break;
-                            }
-                            default: {
-                                Toast.makeText(MainActivity.this, "Nothing clicked...", Toast.LENGTH_SHORT).show();
-                                break;
-                            }
-                        }
+                        onProfileImageClicked(result, dialog);
                     }
                 });
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainMvpPresenter.onButtonConcelClickedListener(btnSubmit, btnCheckout, tvTotalPrice);
             }
         });
 
         setDataToList();
     }
 
+    private void onAddProductToCart(ProductData mProduct, TextView proQuantity) {
+        orderedQuantity = Integer.parseInt(proQuantity.getText().toString());
+        final int availableQuantity = Integer.parseInt(mProduct.getProductQuantity());
+        if (orderedQuantity < availableQuantity) {
+            orderedQuantity++;
+            String productUnitPrice = mProduct.getProductPrice().replace('$', ' ');
+            amount += Double.parseDouble(productUnitPrice);
+            proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
+            double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
+            Snackbar.make(proQuantity, "Added " + mProduct.getProductTitle()
+                    + " to cart!" + "\n" + "Current order: " + orderedQuantity
+                    + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "There is only " + availableQuantity + " " + mProduct.getProductTitle() + " " +
+                            "available in the stock.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onRemoveProductFromCart(ProductData mProduct, TextView proQuantity) {
+        if (orderedQuantity > 0) {
+            String productUnitPrice = mProduct.getProductPrice().replace('$', ' ');
+            amount -= Double.parseDouble(productUnitPrice);
+            orderedQuantity--;
+            double amountForThisGood = orderedQuantity * Double.parseDouble(productUnitPrice);
+            proQuantity.setText(String.format(Locale.US, "%d", orderedQuantity));
+            Snackbar.make(proQuantity, "Removed " + mProduct.getProductTitle() + " from cart!" +
+                    "\n" + "Order remained: " + orderedQuantity
+                    + "     " + "Amount: " + Double.toString(amountForThisGood), Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onProfileImageClicked(int result, Dialog dialog) {
+        switch (result) {
+            case 1: {
+                mainMvpPresenter.onOpenGallery(MainActivity.this, dialog);
+                break;
+            }
+            case 2: {
+                if (checkCameraPermission()) {
+                    dispatchTakePictureIntent();
+                }
+                break;
+            }
+            case 3: {
+                mainMvpPresenter.onViewProfileImage();
+                dialog.dismiss();
+                break;
+            }
+            default: {
+                Toast.makeText(MainActivity.this, "Nothing clicked...", Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)){
-                drawerLayout.closeDrawer(GravityCompat.START);
-                backPress = 0;
-            } else if (backPress <1){
-                Toast.makeText(MainActivity.this, "Press back again to exit!", Toast.LENGTH_SHORT).show();
-                backPress++;
-            } else {
-                finish();
-            }
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            backPress = 0;
+        } else if (backPress < 1) {
+            Toast.makeText(MainActivity.this, "Press back again to exit!", Toast.LENGTH_SHORT).show();
+            backPress++;
+        } else {
+            finish();
+        }
     }
 
     private void checkDeviceCamera(View view) {
@@ -283,6 +303,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mainMvpPresenter.onSignOut(this, displayLoadingProgress.getDialog());
                 break;
             }
+            case R.id.language_english: {
+                setLocale("en");
+                menuItem.setChecked(true);
+                break;
+            }
+            case R.id.language_khmer: {
+                setLocale("kh");
+                menuItem.setChecked(true);
+                break;
+            }
             default:
                 break;
         }
@@ -310,5 +340,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStop() {
         super.onStop();
         backPress = 0;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarGradiant(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final Window window = activity.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(activity.getResources().getColor(R.color.backgroundColor));
+            window.setNavigationBarColor(activity.getResources().getColor(R.color.fui_transparent));
+//            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+    }
+
+    //set language to activity
+    public void setLocale(String localeName) {
+        myLocale = new Locale(localeName);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        Intent refresh = new Intent(this, MainActivity.class);
+        refresh.putExtra(currentLang, localeName);
+        startActivity(refresh);
     }
 }

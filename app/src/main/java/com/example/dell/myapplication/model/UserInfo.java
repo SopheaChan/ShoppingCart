@@ -1,7 +1,5 @@
 package com.example.dell.myapplication.model;
 
-import android.net.Uri;
-
 public class UserInfo {
     private String profileUrl;
     private String uName;

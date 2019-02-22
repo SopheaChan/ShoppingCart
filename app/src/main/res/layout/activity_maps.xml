@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="14dp"
-        android:background="@drawable/maps_activity_toolbar_border">
+        android:background="@drawable/background_maps_activity_toolbar">
 
         <RelativeLayout
             android:layout_width="match_parent"

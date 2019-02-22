@@ -1,12 +1,8 @@
 package com.example.dell.myapplication.custom;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -14,15 +10,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.model.UserInfo;
-import com.example.dell.myapplication.ui.main.MainMvpPresenter;
 import com.example.dell.myapplication.ui.main.MainMvpView;
-import com.example.dell.myapplication.ui.main.MainPresenter;
 
 import java.util.Objects;
 
@@ -43,7 +35,7 @@ public class DisplayProfileInfo {
     public void viewUserInfo(){
         final Dialog dialog = new Dialog(context, R.style.DialogTheme);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.profile_info_layout);
+        dialog.setContentView(R.layout.layout_profile_info);
         Objects.requireNonNull(dialog.getWindow()).setGravity(Gravity.CENTER_VERTICAL);
         dialog.getWindow().setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,

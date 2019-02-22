@@ -17,6 +17,12 @@
             <!--@transition/change_activity_transform</item>-->
     </style>
 
+    <style name="ProductViewTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorProductDetailBackground</item>
+        <item name="colorPrimaryDark">@color/colorProductDetailBackground</item>
+        <item name="colorAccent">@color/colorProductDetailBackground</item>
+    </style>
+
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@null</item>
@@ -27,6 +33,15 @@
     <style name="InputTextLayoutHintText" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/colorHint</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="RatingBarStyle" parent="android:Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar_indicator_matterial</item>
+        <item name="android:indeterminateDrawable">@drawable/ratingbar_indicator_matterial</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:maxHeight">18dp</item>
+        <item name="android:isIndicator">true</item>
+        <item name="android:thumb">@null</item>
     </style>
 
 </resources>

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import com.example.dell.myapplication.R;
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.model.CompanyInfo;
-import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.ProductData;
 import com.example.dell.myapplication.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,30 +31,53 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
-import timber.log.Timber;
-
 public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter {
-    private CompanyInfo companyInfo;
-    private Product product;
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
-    private DialogDisplayLoadingProgress displayLoadingProgress;
+    private DatabaseReference databaseReferenceUser;
+    private DatabaseReference databaseReferenceProduct;
     private StorageReference storageReference;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
     private EditText etSaler;
     private EditText etTel;
     private EditText etEmail;
     private AddProductToStoreMvpView addProductToStoreMvpView;
+    private String userID;
 
-    public AddProductToStorePresenter(){}
+    public AddProductToStorePresenter(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser.getUid();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReferenceUser = firebaseDatabase.getReference("user").child(userID);
+        databaseReferenceProduct = firebaseDatabase.getReference("product");
+        storageReference = FirebaseStorage.getInstance().getReference("product");
+    }
 
     public AddProductToStorePresenter(AddProductToStoreMvpView addProductToStoreMvpView){
         this.addProductToStoreMvpView = addProductToStoreMvpView;
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser.getUid();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReferenceUser = firebaseDatabase.getReference("user").child(userID);
+        databaseReferenceProduct = firebaseDatabase.getReference("product");
+        storageReference = FirebaseStorage.getInstance().getReference("product");
     }
 
     public AddProductToStorePresenter(EditText etSaler, EditText etTel, EditText etEmail){
         this.etSaler = etSaler;
         this.etTel = etTel;
         this.etEmail = etEmail;
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        userID = firebaseUser.getUid();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReferenceUser = firebaseDatabase.getReference("user").child(userID);
+        databaseReferenceProduct = firebaseDatabase.getReference("product");
+        storageReference = FirebaseStorage.getInstance().getReference("product");
     }
 
     @Override
@@ -79,7 +100,7 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
             bundle.putString("comName", comName);
             bundle.putString("comTel", comTel);
             bundle.putString("comEmail", comEmail);
-            Fragment fragment = new ProductInfoFragment();
+            Fragment fragment = new AddProductInfoFragment();
             fragment.setArguments(bundle);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_frame, fragment);
@@ -95,28 +116,21 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
         String companyName = companyInfo.getCompanyName();
         String productTitle = productData.getProductTitle();
 
-        storageReference = FirebaseStorage.getInstance().getReference("product")
-                .child(companyName).child(productTitle);
+        storageReference.child(companyName).child(productTitle);
         StorageTask storageTask = storageReference.putFile(imageUri)
                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
-                            FirebaseStorage.getInstance().getReference("product")
-                                    .child(companyInfo.getCompanyName()).child(productData.getProductTitle()).getDownloadUrl()
+                            storageReference.child(companyInfo.getCompanyName()).child(productData.getProductTitle()).getDownloadUrl()
                                     .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Uri> task) {
                                             if (task.isSuccessful()) {
-                                                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                                final String userID = firebaseUser.getUid();
                                                 productData.setProductImage(task.getResult().toString());
-                                                final DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                                        .getReference("product");
-                                                final String productID = databaseReference.push().getKey();
+                                                final String productID = databaseReferenceProduct.push().getKey();
                                                 productData.setProductID(productID);
-                                                FirebaseDatabase.getInstance().getReference("product")
-                                                        .child(productID)
+                                                        databaseReferenceProduct.child(productID)
                                                         .setValue(productData)
                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
@@ -130,8 +144,6 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
                                                                                 @Override
                                                                                 public void onComplete(@NonNull Task<Void> task) {
                                                                                     if (task.isSuccessful()){
-                                                                                        FirebaseUser firebaseUser1 = FirebaseAuth.getInstance().getCurrentUser();
-                                                                                        String userID = firebaseUser1.getUid();
                                                                                         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance()
                                                                                                 .getReference("my_product")
                                                                                                 .child(userID);
@@ -181,17 +193,10 @@ public class AddProductToStorePresenter implements AddProductToStoreMvpPresenter
 
     @Override
     public void loadUserData() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        String userID = firebaseUser.getUid();
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.getReference("user")
-                .child(userID)
-                .addListenerForSingleValueEvent(valueEventListener);
+        databaseReferenceUser.addListenerForSingleValueEvent(valueEventListener);
     }
 
-    ValueEventListener valueEventListener = new ValueEventListener() {
+    private ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);

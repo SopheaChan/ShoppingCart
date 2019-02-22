@@ -222,20 +222,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onProviderDisabled(String provider) {
     }
 
-//    private OnDialogClick callBack = new OnDialogClick() {
-//        @Override
-//        public void onClick() {
-//            Toast.makeText(MapsActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
-//        }
-//    };
-
     @Override
     public void onMapClick(LatLng latLng) {
         mMap.clear();
         MarkerOptions markerOptions = new MarkerOptions();
         mMap.addMarker(markerOptions.position(latLng).title(getAddressName(latLng)));
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(getCameraPosition(latLng, 6.5f)));
-
     }
 
     @Override

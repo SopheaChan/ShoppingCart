@@ -25,11 +25,12 @@ public class LoginPresenter implements LoginMvpPresenter {
 
     public LoginPresenter(LoginMvpView mView){
         this.mLoginMvpView = mView;
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void onLogin(String email, String password, final Context context) {
-        mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -54,7 +55,6 @@ public class LoginPresenter implements LoginMvpPresenter {
 
     @Override
     public void checkUser(Activity activity) {
-        mAuth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         try {
             if (firebaseUser != null){

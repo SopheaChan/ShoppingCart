@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cam e-Mall</string>
     <string name="open_drawer">Open drawer...</string>
@@ -32,6 +33,6 @@
     <string name="product_description">Description(Optional)</string>
     <string name="total_price">total price</string>
     <string name="check_out">Check Out</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="submit1">Submit</string>
 </resources>

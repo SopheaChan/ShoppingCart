@@ -1,14 +1,11 @@
 package com.example.dell.myapplication.ui.sale_product;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.widget.EditText;
 
 import com.example.dell.myapplication.custom.DialogDisplayLoadingProgress;
 import com.example.dell.myapplication.model.CompanyInfo;
-import com.example.dell.myapplication.model.Product;
 import com.example.dell.myapplication.model.ProductData;
 
 public interface AddProductToStoreMvpPresenter {
